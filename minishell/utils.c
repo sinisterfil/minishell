@@ -1,4 +1,75 @@
 #include "minishell.h"
+# include <readline/history.h>
+# include <readline/readline.h>
+// # include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+
+size_t	ft_strlen(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	char	*d;
+	size_t	slen;
+
+	slen = ft_strlen((char *)s1);
+	d = (char *)malloc((slen + 1) * (sizeof(char)));
+	if (!d)
+		return (NULL);
+	while (*s1 != '\0')
+	{
+		*d = *s1;
+		d++;
+		s1++;
+	}
+	*d = '\0';
+	return ((char *)(d - slen));
+}
+
+size_t	ft_strlcpy(char *dest, const char *src, size_t destsize)
+{
+	size_t	i;
+
+	i = 0;
+	if (!destsize)
+		return (ft_strlen((char *)src));
+	while (src[i] && (i < destsize - 1))
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = 0;
+	return (ft_strlen((char *)src));
+}
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	size_t	end;
+	size_t	s_len;
+	char	*d;
+
+	if (!s)
+		return (NULL);
+	s_len = ft_strlen((char *)s);
+	if (start > (s_len))
+		return (ft_strdup(""));
+	end = start + len;
+	if (end > (s_len))
+		len = s_len - start;
+	d = malloc((len + 1) * sizeof(char));
+	if (!d)
+		return (NULL);
+	ft_strlcpy(d, s + start, len + 1);
+	return ((char *)d);
+}
 
 static size_t	count_word(const char *p, char c)
 {
@@ -60,4 +131,34 @@ char	**ft_split(char const *s, char c)
 	}
 	list[count] = NULL;
 	return (list);
+}
+t_token	*ft_lstnew(void *content)
+{
+	t_token	*node;
+
+	node = malloc(sizeof(t_token));
+	if (!node)
+		return (0);
+	node->content = content;
+	node->next = NULL;
+	return (node);
+}
+
+t_token	*ft_lstlast(t_token *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
+}
+
+void	ft_lstadd_back(t_token **lst, t_token *new)
+{
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	ft_lstlast(*lst)->next = new;
 }
