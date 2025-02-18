@@ -132,6 +132,38 @@ char	**ft_split(char const *s, char c)
 	list[count] = NULL;
 	return (list);
 }
+
+char	*ft_strchr(const char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	c = (char)c;
+	while (s[i] != '\0')
+	{
+		if (s[i] == c)
+			return ((char *)&s[i]);
+		i++;
+	}
+	if (s[i] == '\0' && c == s[i])
+		return ((char *)&s[i]);
+	return (0);
+}
+
+char	*ft_strtrim(char const *s1, char const *set)
+{
+	int		len;
+	char	*s;
+
+	while (*s1 && ft_strchr(set, *s1))
+		s1++;
+	len = ft_strlen((char *)s1);
+	while (len && s1[len - 1] && ft_strchr(set, s1[len]))
+		len--;
+	s = ft_substr(s1, 0, len + 1);
+	return (s);
+}
+
 t_token	*ft_lstnew(void *content)
 {
 	t_token	*node;
