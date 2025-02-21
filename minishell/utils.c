@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/19 16:34:15 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/02/21 14:07:53 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-# include <readline/history.h>
-# include <readline/readline.h>
-// # include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <unistd.h>
 
 size_t	ft_strlen(const char *s)
 {

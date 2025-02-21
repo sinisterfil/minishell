@@ -3,20 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:23 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/19 18:53:07 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/02/21 12:48:30 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
 
 void signal_handler(int signal)
 {
+    (void)signal;
     printf("\n");
     rl_on_new_line(); // Readline kullanıyorsanız
     rl_replace_line("", 0); // Mevcut satırı temizle
