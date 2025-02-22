@@ -19,7 +19,6 @@ typedef struct s_token
 
 }   t_token;
 
-
 char	**ft_split(char const *s, char c);
 void	ft_lstadd_back(t_token **lst, t_token *new);
 t_token	*ft_lstlast(t_token *lst);

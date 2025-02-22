@@ -3,75 +3,130 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/21 20:50:09 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/02/22 05:46:58 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	ft_argument(char *line, int *a, int *z)
+{
+	int i;
+	int j;
+	char quote;
+
+	i = *a;
+	j = *z;
+	quote = -99; 
+	if ((line[j] == 34 && line[j + 1] == 39) || (line[j] == 39 && line[j + 1] == 34))
+			j = j + 1;
+	if (line[i] == 34 || line[i] == 39)
+    {
+		j = i + 1;
+        quote = line[i];
+		i++;
+        while (line[j] && line[j] != quote)
+            j++;
+		
+    }
+    else
+    {
+		j = i;
+        while (line[j] && line[j] != 32 && line[j] != 39 && line[j] != 34)
+            j++;
+    }
+	*a = i;
+	*z = j;
+	return (int)quote; // j = 3 i = 4
+}
+
+
 void arguman_bul(char *line, t_token *token)
 {
     int i;
 	int j;
-    char quote;
+    int quote;
     t_token *new_token;
 
 	i = 0;
+	j = 0;
     while (line[i])
     {
-		quote = -99;
+		if (ft_lstlast(token) && ft_lstlast(token)->space == 0 && ft_lstlast(token)->flag == -99 && !((line[i - 1] == 34 && line[i] == 34) || (line[i - 1] == 39 && line[i] == 39)))
+			i--;
         while (line[i] == 32 || (line[i] >= 9 && line[i] <= 13)) 
             i++;
         if (!line[i]) 
             break;
-        if (line[i] == 34 || line[i] == 39)
-        {
-			j = i + 1;
-            quote = line[i];
-			i++;
-            while (line[j] && line[j] != quote)
-                j++;
-        }
-        else
-        {
-			j = i;
-            while (line[j] && line[j] != 32 && line[j] != 39 && line[j] != 34)
-                j++;
-        }
+		quote = ft_argument(line, &i, &j);
         if (j - i > 0)
 		{
 			new_token = ft_lstnew(ft_substr(line, i, j - i));
 			new_token->space = 0;
         	i = j + 1;
 	        ft_lstadd_back(&token, new_token);
-			new_token->flag = (int)quote;
+			new_token->flag = quote;
 			if((line[j + 1] == 32 || (line[j + 1] >= 9 && line[j + 1] <= 13)) && (quote == 34 || quote == 39))
 				new_token->space = 1;
 			else if(line[j] == 32 || (line[j] >= 9 && line[j] <= 13))
 				new_token->space = 1;
 		}
+		else if(i == j && (quote == 34 || quote == 39))
+			i++;
     }
 }
 
-void	create_token(char **tokens, t_token *list)
-{
-	int		i;
-	t_token	*temp;
-	t_token	*new_token;
+// void arguman_bul(char *line, t_token *token)
+// {
+//     int i;
+// 	int j;
+//     char quote;
+//     t_token *new_token;
 
-	temp = list;
-	i = 0;
-	while (tokens[i])
-	{
-		new_token = ft_lstnew(tokens[i]);
-		temp->next = new_token;
-		temp = temp->next;
-		i++;
-	}
-}
+// 	i = 0;
+//     while (line[i])
+//     {
+// 		quote = -99;
+// 		if (ft_lstlast(token) && ft_lstlast(token)->space == 0 && ft_lstlast(token)->flag == -99)
+// 			i--;
+//         while (line[i] == 32 || (line[i] >= 9 && line[i] <= 13)) 
+//             i++;
+//         if (!line[i]) 
+//             break;
+//         if (line[i] == 34 || line[i] == 39)
+//         {
+// 			j = i + 1;
+//             quote = line[i];
+// 			i++;
+//             while (line[j] && line[j] != quote)
+//                 j++;
+//         }
+//         else
+//         {
+// 			j = i;
+//             while (line[j] && line[j] != 32 && line[j] != 39 && line[j] != 34)
+//                 j++;
+//         }
+//         if (j - i > 0)
+// 		{
+// 			new_token = ft_lstnew(ft_substr(line, i, j - i));
+// 			new_token->space = 0;
+//         	i = j + 1;
+// 	        ft_lstadd_back(&token, new_token);
+// 			new_token->flag = (int)quote;
+// 			if((line[j + 1] == 32 || (line[j + 1] >= 9 && line[j + 1] <= 13)) && (quote == 34 || quote == 39))
+// 				new_token->space = 1;
+// 			else if(line[j] == 32 || (line[j] >= 9 && line[j] <= 13))
+// 				new_token->space = 1;
+// 		}
+// 		else if (j == i && (quote == 34 || quote == 39))
+// 			i++;
+//     }
+// }
+
 int	quote_control(char *line)
 {
 	int	i;
@@ -106,17 +161,12 @@ void	print_token(t_token *list)
 }
 void	parsing(char *line)
 {
-	char	**tokens;
 	t_token	list;
 
     if(quote_control(line) != 0){
         return ;
 	}
-	tokens = ft_split(line, ' ');
-	if (!tokens)
-		exit(11); 
 	// history ve line freelenmesi lazım
-	//create_token(tokens, &list);
 	arguman_bul(line, &list);
 	print_token(list.next);
 }
