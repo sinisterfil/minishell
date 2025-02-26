@@ -3,7 +3,8 @@ NAME = minishell
 SRCS = 	minishell.c\
 		utils.c\
 		signals.c\
-
+		quotes.c\
+		
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory -lncurses
 
