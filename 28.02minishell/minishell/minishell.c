@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/28 12:57:44 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/02/28 14:31:20 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	quote_control(char *line)
 	return (0);
 }
 
+
 void main_free(char *line, int key)
 {
 	if(line)
@@ -54,32 +55,32 @@ void	print_token(t_token *list)
 	}
 }
 
-void	parsing(char *line)
+void	parsing(char *line, t_main *program)
 {
 	char *linenew;
-	t_token list;
 
     if(quote_control(line) != 0)
     {
     	return ;
 	}
 	linenew = empty_quotes(line);
-	tokenize_args(linenew, &list);
-	print_token(list.next);
+	tokenize_args(linenew, &program->token);
+	print_token(program->token->next);
 }
 
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
+	t_main program;
 	(void)av;
 	(void)env;
 	
 	if (ac != 1)
 		exit(61);
 	signal_init();
-	// init();
 	while (1)
 	{
+		token_init(&program);
 		line = readline("ilknur&&eslem<3 ");
 		if (line == NULL)  // Eğer Ctrl-D ile EOF alırsak, readline() NULL döndürecektir
         {
@@ -89,7 +90,9 @@ int	main(int ac, char **av, char **env)
 		if (ft_strlen(line) > 0)
 		{
 			add_history(line);
-			parsing(line);
+			parsing(line, &program);
+			//join_tokens();
+			//executing();
 		}
 		main_free(line, 0);
 	}

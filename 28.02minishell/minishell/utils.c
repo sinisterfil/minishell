@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/28 12:52:39 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/02/28 13:27:46 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,8 @@ t_token	*ft_lstnew(void *content)
 	if (!node)
 		return (0);
 	node->content = content;
+	node->rank = 0;
+	node->flag = -99;
 	node->next = NULL;
 	return (node);
 }

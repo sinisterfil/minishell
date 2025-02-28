@@ -10,21 +10,27 @@
 # include <unistd.h>
 # define WHITESPACE " \t\n\v\f\r"
 
+typedef struct s_token t_token;
+typedef struct s_main t_main;
+
 typedef struct s_token
 {
 	char			*content;
 	int				rank;
 	int				flag;
 	int				space;
+	t_main *program;
+	
 	struct s_token	*next;
 
 }					t_token;
 
-typedef struct s_program
+typedef struct s_main
 {
-	t_token *token;
+	char			*full_str;
+	t_token			*token;
 
-}					t_program;
+}					t_main;
 
 // utils
 char				**ft_split(char *s, char c);
@@ -39,13 +45,16 @@ char				*ft_strjoin(char *s1, char *s2);
 size_t				ft_strlcpy(char *dest, char *src, size_t destsize);
 char				*ft_strdup(char *s1);
 
-//signal
+// signal
 void				signal_init(void);
 void				signal_handler(int signal);
 
 // quotes
 char				*empty_quotes(char *line);
 int					find_quotes(char *line, int *ptr_i, int *ptr_j);
-void				tokenize_args(char *line, t_token *token);
+void				tokenize_args(char *line, t_token **token);
+
+// init
+void				token_init(t_main *program);
 
 #endif

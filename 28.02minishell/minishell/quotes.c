@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:14:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/28 13:02:23 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/02/28 14:32:17 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static void	token_flags(char *line, t_token *new_token, int quote)
 		new_token->space = 1;
 }
 
-void	tokenize_args(char *line, t_token *token)
+void	tokenize_args(char *line, t_token **token)
 {
 	int		i;
 	int		j;
@@ -102,8 +102,8 @@ void	tokenize_args(char *line, t_token *token)
 	j = 0;
 	while (line[i])
 	{
-		if (ft_lstlast(token) && ft_lstlast(token)->space == 0
-			&& ft_lstlast(token)->flag == -99)
+		if (token && ft_lstlast(*token) && ft_lstlast(*token)->space == 0
+			&& ft_lstlast(*token)->flag == -99)
 			i--;
 		while (line[i] == 32 || (line[i] >= 9 && line[i] <= 13))
 			i++;
@@ -112,7 +112,7 @@ void	tokenize_args(char *line, t_token *token)
 		{
 			new_token = ft_lstnew(ft_substr(line, i, j - i));
 			i = j + 1;
-			ft_lstadd_back(&token, new_token);
+			ft_lstadd_back(token, new_token);
 			token_flags(line + j, new_token, quote);
 		}
 		else if (i == j && (quote == 34 || quote == 39))
