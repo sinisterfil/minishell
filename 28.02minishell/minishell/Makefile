@@ -3,10 +3,10 @@ NAME = minishell
 SRCS = 	minishell.c\
 		utils.c\
 		signals.c\
-
+		quotes.c\
+		
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory -lncurses
-
+CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory -lncurses #-fsanitize=address
 OBJS = $(SRCS:.c=.o)
 RM = rm -f
 

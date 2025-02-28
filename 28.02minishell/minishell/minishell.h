@@ -27,24 +27,24 @@ typedef struct s_program
 }					t_program;
 
 // utils
-char				**ft_split(char const *s, char c);
+char				**ft_split(char *s, char c);
 void				ft_lstadd_back(t_token **lst, t_token *new);
 t_token				*ft_lstlast(t_token *lst);
 t_token				*ft_lstnew(void *content);
 char				*ft_strchr(const char *s, int c);
-char				*ft_strtrim(char const *s1, char const *set);
-size_t				ft_strlen(const char *s);
-char				*ft_substr(char const *s, unsigned int start, size_t len);
-char				*ft_strjoin(char const *s1, char const *s2);
-size_t				ft_strlcpy(char *dest, const char *src, size_t destsize);
-char				*ft_strdup(const char *s1);
+char				*ft_strtrim(char *s1, char *set);
+size_t				ft_strlen(char *s);
+char				*ft_substr(char *s, unsigned int start, size_t len);
+char				*ft_strjoin(char *s1, char *s2);
+size_t				ft_strlcpy(char *dest, char *src, size_t destsize);
+char				*ft_strdup(char *s1);
 
 //signal
 void				signal_init(void);
 void				signal_handler(int signal);
 
 // quotes
-char				*empty_quotes(char *line, char quote);
+char				*empty_quotes(char *line);
 int					find_quotes(char *line, int *ptr_i, int *ptr_j);
 void				tokenize_args(char *line, t_token *token);
 

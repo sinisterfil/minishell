@@ -6,13 +6,13 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/25 15:51:50 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/02/28 12:52:39 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
 	int	i;
 
@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strdup(const char *s1)
+char	*ft_strdup(char *s1)
 {
 	char	*d;
 	size_t	slen;
@@ -41,7 +41,7 @@ char	*ft_strdup(const char *s1)
 	return ((char *)(d - slen));
 }
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t destsize)
+size_t	ft_strlcpy(char *dest, char *src, size_t destsize)
 {
 	size_t	i;
 
@@ -56,7 +56,7 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t destsize)
 	dest[i] = 0;
 	return (ft_strlen((char *)src));
 }
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	size_t	end;
 	size_t	s_len;
@@ -77,7 +77,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return ((char *)d);
 }
 
-static size_t	count_word(const char *p, char c)
+static size_t	count_word(char *p, char c)
 {
 	size_t	i;
 	size_t	len;
@@ -110,11 +110,11 @@ static size_t	check(char **list, size_t count)
 	return (1);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char *s, char c)
 {
 	char		**list;
 	size_t		count;
-	const char	*begin;
+	char	*begin;
 
 	count = 0;
 	list = (char **)malloc(sizeof(char *) * (count_word(s, c) + 1));
@@ -156,7 +156,7 @@ char	*ft_strchr(const char *s, int c)
 	return (0);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char *s1, char *set)
 {
 	int		len;
 	char	*s;
@@ -170,33 +170,29 @@ char	*ft_strtrim(char const *s1, char const *set)
 	return (s);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	char	*new;
-	size_t	len1;
-	size_t	len2;
-	size_t	i;
-	size_t	j;
+	char *str;
+	int i;
+	int j;
 
-	i = 0;
-	j = 0;
-	len2 = ft_strlen(s2);
-	len1 = ft_strlen(s1);
-	new = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
-	if (!new)
-		return (NULL);
-	while (i < (len1 + len2))
+	if (!s1)
 	{
-		if (i < len1)
-			new[i] = s1[i];
-		else
-		{
-			new[i] = s2[j++];
-		}
-		i++;
+		s1 = malloc(1 * sizeof(char));
+		*s1 = '\0';
 	}
-	new[(len1 + len2)] = '\0';
-	return (new);
+	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!str)
+		return (NULL);
+	i = -1;
+	while (*(s1 + ++i))
+		*(str + i) = *(s1 + i);
+	j = -1;
+	while (*(s2 + ++j))
+		*(str + i + j) = *(s2 + j);
+	*(str + i + j) = '\0';
+	free(s1);
+	return (str);
 }
 
 t_token	*ft_lstnew(void *content)

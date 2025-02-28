@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/26 16:26:38 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/02/28 12:57:44 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,7 @@ void	parsing(char *line)
     {
     	return ;
 	}
-	// history ve line freelenmesi lazım
-	linenew = empty_quotes(line, 34);
-	linenew = empty_quotes(linenew, 39);
+	linenew = empty_quotes(line);
 	tokenize_args(linenew, &list);
 	print_token(list.next);
 }
@@ -85,7 +83,7 @@ int	main(int ac, char **av, char **env)
 		line = readline("ilknur&&eslem<3 ");
 		if (line == NULL)  // Eğer Ctrl-D ile EOF alırsak, readline() NULL döndürecektir
         {
-            printf("exit\n"); //exit fonks yazılacak.
+            printf("exit\n");
             break;
         }
 		if (ft_strlen(line) > 0)
@@ -95,6 +93,6 @@ int	main(int ac, char **av, char **env)
 		}
 		main_free(line, 0);
 	}
-	main_free(line, 1); //1 olduğu için 
+	main_free(line, 1);
 	return (0);
 }
