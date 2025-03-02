@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/28 14:31:20 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/02 14:58:44 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,32 @@ int	quote_control(char *line)
 	return (0);
 }
 
-
-void main_free(char *line, int key)
+void free_program(t_main *program)
 {
-	if(line)
-		free(line);
-	if(key == 1)
-		rl_clear_history();
+    t_token *node;
+    t_token *temp;
+
+    node = program->token; 
+    while (node)
+    {
+        temp = node;
+        node = node->next;
+		free(temp->content);
+        free(temp);
+    }
+    program->token = NULL;  
 }
+
+
+void main_free(t_main program, char *line, int key)
+{
+    if (line)
+        free(line);
+    free_program(&program); 
+    if (key == 1)
+        rl_clear_history();
+}
+
 
 void	print_token(t_token *list)
 {
@@ -65,6 +83,7 @@ void	parsing(char *line, t_main *program)
 	}
 	linenew = empty_quotes(line);
 	tokenize_args(linenew, &program->token);
+	dollar_control(program->token);
 	print_token(program->token->next);
 }
 
@@ -94,8 +113,8 @@ int	main(int ac, char **av, char **env)
 			//join_tokens();
 			//executing();
 		}
-		main_free(line, 0);
+		main_free(program, line, 0);
 	}
-	main_free(line, 1);
+	main_free(program, line, 1);
 	return (0);
 }

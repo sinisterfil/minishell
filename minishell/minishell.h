@@ -10,6 +10,7 @@
 # include <unistd.h>
 # define WHITESPACE " \t\n\v\f\r"
 
+
 typedef struct s_token t_token;
 typedef struct s_main t_main;
 
@@ -37,13 +38,17 @@ char				**ft_split(char *s, char c);
 void				ft_lstadd_back(t_token **lst, t_token *new);
 t_token				*ft_lstlast(t_token *lst);
 t_token				*ft_lstnew(void *content);
+int					ft_our_strchr( char *s, int c);
 char				*ft_strchr(const char *s, int c);
 char				*ft_strtrim(char *s1, char *set);
 size_t				ft_strlen(char *s);
 char				*ft_substr(char *s, unsigned int start, size_t len);
 char				*ft_strjoin(char *s1, char *s2);
+char				*my_join(char *line, char *s1, char *s2);
 size_t				ft_strlcpy(char *dest, char *src, size_t destsize);
 char				*ft_strdup(char *s1);
+int					ft_isalnum(int c);
+
 
 // signal
 void				signal_init(void);
@@ -56,5 +61,10 @@ void				tokenize_args(char *line, t_token **token);
 
 // init
 void				token_init(t_main *program);
+
+//dollar
+void dollar_control(t_token *token);
+char *find_dollar(t_token *node, int index);
+char *dollar_handle(char *dollar);
 
 #endif

@@ -5,6 +5,7 @@ SRCS = 	minishell.c\
 		signals.c\
 		quotes.c\
 		init.c\
+		dollar.c\
 		
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory -lncurses #-fsanitize=address

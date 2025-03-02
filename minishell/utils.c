@@ -6,7 +6,7 @@
 /*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/28 18:54:42 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/02 15:19:18 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,23 @@ char	**ft_split(char *s, char c)
 	return (list);
 }
 
+int	ft_our_strchr( char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	c = (char)c;
+	while (s[i] != '\0')
+	{
+		if (s[i] == c)
+			return (i);
+		i++;
+	}
+	if (s[i] == '\0' && c == s[i])
+		return (i);
+	return (-1);
+}
+
 char	*ft_strchr(const char *s, int c)
 {
 	int	i;
@@ -218,6 +235,31 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (str);
 }
 
+int	ft_isdigit(int c)
+{
+	if (c >= 48 && c <= 57)
+	{
+		return (1);
+	}
+	return (0);
+}
+
+int	ft_isalpha(int c)
+{
+	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+	{
+		return (1);
+	}
+	return (0);
+}
+
+int	ft_isalnum(int c)
+{
+	if(c == 0)
+		return (0);
+	return (ft_isalpha(c) || ft_isdigit(c));
+}
+
 t_token	*ft_lstnew(void *content)
 {
 	t_token	*node;
@@ -229,7 +271,6 @@ t_token	*ft_lstnew(void *content)
 	node->rank = 0;
 	node->flag = -99;
 	node->next = NULL;
-	free(content);
 	return (node);
 }
 

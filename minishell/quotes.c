@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:14:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/02/28 14:32:17 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/02 13:49:41 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static char	*if_loop(char *line, int i)
 
 	first = ft_substr(line, 0, i - 2);
 	new = ft_substr(line, i, ft_strlen(&line[i]));
-	new = ft_strjoin(first, new);
-	return (new);
+	line = my_join(line, first, new);
+	return (line);
 }
 
 char	*empty_quotes(char *line)
