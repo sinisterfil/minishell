@@ -20,6 +20,7 @@ typedef struct s_token
 	int				rank;
 	int				flag;
 	int				space;
+	int				dollar;
 	t_main *program;
 	
 	struct s_token	*next;
@@ -64,7 +65,7 @@ void				token_init(t_main *program);
 
 //dollar
 void dollar_control(t_token *token);
-char *find_dollar(t_token *node, int index);
+char *find_dollar(char *content, int index);
 char *dollar_handle(char *dollar);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/02 15:19:18 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/03 15:04:05 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,20 +141,19 @@ char	**ft_split(char *s, char c)
 
 int	ft_our_strchr( char *s, int c)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	c = (char)c;
 	while (s[i] != '\0')
 	{
-		if (s[i] == c)
+		if (s[i] == c && (ft_isalnum(s[i + 1])))
 			return (i);
 		i++;
 	}
-	if (s[i] == '\0' && c == s[i])
-		return (i);
 	return (-1);
 }
+
 
 char	*ft_strchr(const char *s, int c)
 {
