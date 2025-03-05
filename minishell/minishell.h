@@ -8,6 +8,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+#include <sys/wait.h>
 # define WHITESPACE " \t\n\v\f\r"
 
 
@@ -18,6 +19,12 @@ typedef struct s_token
 {
 	char			*content;
 	int				rank;
+	// int				pipe;
+	// int				redirect;
+	// int 			heredoc;
+	// int 			cmd;
+	// int				txt;
+	int				word;
 	int				flag;
 	int				space;
 	int				dollar;
@@ -49,7 +56,7 @@ char				*my_join(char *line, char *s1, char *s2);
 size_t				ft_strlcpy(char *dest, char *src, size_t destsize);
 char				*ft_strdup(char *s1);
 int					ft_isalnum(int c);
-
+int					ft_strcmp(char *s1, char *s2);
 
 // signal
 void				signal_init(void);
@@ -61,11 +68,15 @@ int					find_quotes(char *line, int *ptr_i, int *ptr_j);
 void				tokenize_args(char *line, t_token **token);
 
 // init
-void				token_init(t_main *program);
+void token_init(t_main *program);
 
 //dollar
 void dollar_control(t_token *token);
 char *find_dollar(char *content, int index);
 char *dollar_handle(char *dollar);
+
+//control
+int pipe_control(t_token *token);
+int set_rank(t_token *token);
 
 #endif

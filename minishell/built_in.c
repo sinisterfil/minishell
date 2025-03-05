@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   built_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/28 13:16:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/05 08:36:52 by ihancer          ###   ########.fr       */
+/*   Created: 2025/03/05 10:19:44 by ihancer           #+#    #+#             */
+/*   Updated: 2025/03/05 10:25:54 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void token_init(t_main *program)
+void ft_echo(t_token *token)
 {
-    program->token = malloc(sizeof(t_token));
-    if (!program->token)
-    {
-        perror("Malloc failed");
-        exit(1);
-    }
-    program->token->content = NULL;
-    program->token->rank = 0;
-    program->token->dollar = 0;
-    program->token->flag = 0;
-    program->token->next = NULL;
+    
 }

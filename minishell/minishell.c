@@ -6,7 +6,7 @@
 /*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/02 14:58:44 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/05 11:21:41 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	print_token(t_token *list)
 		printf("%s\n", list->content);
 		printf("%d\n", list->space);
 		printf("%d\n", list->flag);
+        printf("**%s\t%d**\n", list->content, list->rank);
 		list = list->next;
 	}
 }
@@ -83,6 +84,10 @@ void	parsing(char *line, t_main *program)
 	}
 	linenew = empty_quotes(line);
 	tokenize_args(linenew, &program->token);
+	if(set_rank(program->token) == 1)
+    {
+    	return ;
+	}
 	dollar_control(program->token);
 	print_token(program->token->next);
 }

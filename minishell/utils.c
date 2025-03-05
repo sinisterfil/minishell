@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/03 15:04:05 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/05 04:20:09 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,16 @@ static size_t	count_word(char *p, char c)
 	return (len);
 }
 
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
+}
+
 static size_t	check(char **list, size_t count)
 {
 	if (!list[count])
@@ -147,7 +157,7 @@ int	ft_our_strchr( char *s, int c)
 	c = (char)c;
 	while (s[i] != '\0')
 	{
-		if (s[i] == c && (ft_isalnum(s[i + 1])))
+		if (s[i] == c && ft_isalnum(s[i + 1]))
 			return (i);
 		i++;
 	}
