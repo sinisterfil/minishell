@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:14:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/05 08:29:45 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/07 14:38:33 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static char	*if_loop(char *line, int i)
 {
-	char *first;
-	char *new;
+	char	*first;
+	char	*new;
 
 	first = ft_substr(line, 0, i - 2);
 	new = ft_substr(line, i, ft_strlen(&line[i]));

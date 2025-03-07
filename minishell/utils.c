@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/05 04:20:09 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/06 16:34:19 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,27 @@ size_t	ft_strlen(char *s)
 	while (s[i] != '\0')
 		i++;
 	return (i);
+}
+
+int 	ft_strstr(char *str, char *to_find)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	if (to_find[j] == '\0')
+		return (-1);
+	while (str[i] != '\0')
+	{
+		while (str[i + j] == to_find[j] && str[i + j] != '\0')
+			j++;
+		if (to_find[j] == '\0')
+			return (i);
+		i++;
+		j = 0;
+	}
+	return (-1);
 }
 
 char	*ft_strdup(char *s1)
@@ -290,6 +311,28 @@ t_token	*ft_lstlast(t_token *lst)
 	while (lst->next)
 		lst = lst->next;
 	return (lst);
+}
+
+void	ft_lstdelone(t_token *lst, void (*del)(void*))
+{
+	if (!del)
+		return ;
+	if (lst)
+	{
+		(*del)(lst->content);
+		free(lst);
+	}
+}
+
+void	ft_lstadd(t_token *node, t_token *new)
+{
+    t_token *temp;
+
+    if (!node || !new )
+        return;
+    temp = node->next;
+    node->next = new;
+	new->next = temp;
 }
 
 void	ft_lstadd_back(t_token **lst, t_token *new)

@@ -57,6 +57,8 @@ size_t				ft_strlcpy(char *dest, char *src, size_t destsize);
 char				*ft_strdup(char *s1);
 int					ft_isalnum(int c);
 int					ft_strcmp(char *s1, char *s2);
+int 				ft_strstr(char *str, char *to_find);
+void				ft_lstadd(t_token *node, t_token *new);
 
 // signal
 void				signal_init(void);
@@ -78,5 +80,9 @@ char *dollar_handle(char *dollar);
 //control
 int pipe_control(t_token *token);
 int set_rank(t_token *token);
+
+void	find_keys(t_token **token);
+void	print_token(t_token *list);
+
 
 #endif
