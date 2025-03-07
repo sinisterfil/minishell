@@ -9,15 +9,18 @@ char *dollar_handle(char *dollar)
     if (ft_strcmp(dollar, "0") == 0)
     {
         new_dollar = "minishell";
-        biktim = malloc(ft_strlen(new_dollar));
+        // biktim = malloc(ft_strlen(new_dollar));
         biktim = ft_strdup(new_dollar);
     }
     else
     {
         new_dollar = getenv(dollar);
         if(new_dollar == NULL)
+        {
+            free(dollar);
             return (NULL);
-        biktim = malloc(ft_strlen(new_dollar));
+        }
+        // biktim = malloc(ft_strlen(new_dollar));
         biktim = ft_strdup(new_dollar);
     }
     free(dollar);

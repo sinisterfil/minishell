@@ -24,7 +24,7 @@ typedef struct s_token
 	// int 			heredoc;
 	// int 			cmd;
 	// int				txt;
-	int				word;
+	// int				word;
 	int				flag;
 	int				space;
 	int				dollar;

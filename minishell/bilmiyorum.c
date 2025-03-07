@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 12:24:37 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/07 15:18:50 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/07 16:30:38 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void separate_three(t_token *token, char *content, int len, int location)
 
     str = ft_strdup(token->content);
     str_len = ft_strlen(str);
-    temp = token->next;
+    temp = token->next;   
     new = ft_lstnew(ft_strdup(content));
     last = ft_lstnew(ft_substr(str, location + len, str_len - location - len));
     token->next = new;
@@ -56,6 +56,7 @@ void separate_three(t_token *token, char *content, int len, int location)
     last->next = temp;
     free(token->content);
     token->content = ft_substr(str, 0, location);
+    free(str);
 }
 
 void arrange_tokens(t_token *token, char *content, int len)
