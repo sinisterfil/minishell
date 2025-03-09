@@ -13,31 +13,36 @@
 
 
 typedef struct s_token t_token;
+typedef struct s_env t_env;
 typedef struct s_main t_main;
 
 typedef struct s_token
 {
 	char			*content;
 	int				rank;
-	// int				pipe;
-	// int				redirect;
-	// int 			heredoc;
-	// int 			cmd;
-	// int				txt;
-	// int				word;
 	int				flag;
 	int				space;
 	int				dollar;
-	t_main *program;
+	t_main 			*program;
 	
 	struct s_token	*next;
 
 }					t_token;
 
-typedef struct s_main
+typedef struct s_env
 {
 	char			*full_str;
+	char 			*before_eq;
+	char 			*after_eq;
+	t_main			*program;
+	struct  s_env	*next;
+}					t_env;
+
+typedef struct s_main
+{
+	char			**env_str;
 	t_token			*token;
+	t_env			*env;
 
 }					t_main;
 
@@ -59,6 +64,7 @@ int					ft_isalnum(int c);
 int					ft_strcmp(char *s1, char *s2);
 int 				ft_strstr(char *str, char *to_find);
 void				ft_lstadd(t_token *node, t_token *new);
+int 	of_strchr(const char *s, int c);
 
 // signal
 void				signal_init(void);
@@ -71,6 +77,7 @@ void				tokenize_args(char *line, t_token **token);
 
 // init
 void token_init(t_main *program);
+void ft_init(t_main *program, char **env);
 
 //dollar
 void dollar_control(t_token *token);
@@ -84,5 +91,7 @@ int set_rank(t_token *token);
 void	find_keys(t_token **token);
 void	print_token(t_token *list);
 
+//env
+void set_env(t_main *program, t_env *env);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/07 17:12:32 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/09 08:57:23 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,17 @@ void	parsing(char *line, t_main *program)
 	print_token(program->token->next);
 }
 
+// // env komutunu çalıştıran fonksiyon
+// void ft_env(char **envp) {
+//     int i = 0;
+
+//     while (envp[i]) {
+//         printf("%s\n", envp[i]);
+//         i++;
+//     }
+// }
+
+
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
@@ -104,14 +115,18 @@ int	main(int ac, char **av, char **env)
 	signal_init();
 	while (1)
 	{
-		token_init(&program);
+		ft_init(&program, env);
 		line = readline("ilknur&&eslem<3 ");
 		if (line == NULL)  // Eğer Ctrl-D ile EOF alırsak, readline() NULL döndürecektir
         {
             printf("exit\n");
             break;
         }
-		if (ft_strlen(line) > 0)
+		// if (ft_strcmp(line, "env") == 0)
+		// {
+		// 	ft_env(env);
+		// }
+		else if (ft_strlen(line) > 0)
 		{
 			add_history(line);
 			parsing(line, &program);

@@ -8,6 +8,7 @@ SRCS = 	minishell.c\
 		dollar.c\
 		control.c\
 		bilmiyorum.c\
+		env.c\
 		
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory -lncurses #-fsanitize=address

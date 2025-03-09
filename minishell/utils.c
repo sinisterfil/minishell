@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/06 16:34:19 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/09 00:44:48 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,22 @@ int	ft_our_strchr( char *s, int c)
 	return (-1);
 }
 
+int 	of_strchr(const char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	c = (char)c;
+	while (s[i] != '\0')
+	{
+		if (s[i] == c)
+			return (i);
+		i++;
+	}
+	if (s[i] == '\0' && c == s[i])
+		return (i);
+	return (-1);
+}
 
 char	*ft_strchr(const char *s, int c)
 {
