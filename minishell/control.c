@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   control.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:39 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/07 15:17:09 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/10 21:41:11 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@ int	set_rank(t_token *token)
 	t_token	*node;
 
 	node = token;
-    node = node->next;
+	node = node->next;
 	while (node != NULL)
 	{
-        if (node->content != NULL && ft_strchr(node->content, '|') && node->flag == -99)
+		if (node->content != NULL && ft_strchr(node->content, '|')
+			&& node->flag == -99)
 			node->rank = 1;
 		else if (node->content != NULL && (ft_strcmp(node->content, "<") == 0
 				|| ft_strcmp(node->content, ">") == 0
@@ -30,7 +31,7 @@ int	set_rank(t_token *token)
 			node->rank = 3;
 		else
 			node->rank = 4;
-        node = node->next;
+		node = node->next;
 	}
 	if (pipe_control(token) == 0)
 		return (0);
@@ -59,11 +60,24 @@ int	pipe_control(t_token *token)
 	return (0);
 }
 
-// int builtin_control()
-// {
+int	quote_control(char *line)
+{
+	int	i;
+	int	flag;
 
-// }
-// int redirection_control()
-// {
-
-// }
+	flag = 0;
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == 34 && flag == 0)
+			flag = 34;
+		else if (line[i] == 39 && flag == 0)
+			flag = 39;
+		else if (line[i] == flag && flag != 0)
+			flag = 0;
+		i++;
+	}
+	if (flag != 0)
+		return (printf("Error! Waiting for expression.\n"));
+	return (0);
+}

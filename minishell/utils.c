@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/09 00:44:48 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/15 14:07:47 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,4 +359,66 @@ void	ft_lstadd_back(t_token **lst, t_token *new)
 		return ;
 	}
 	ft_lstlast(*lst)->next = new;
+}
+
+t_env	*a_lstnew(char *before, char *after)
+{
+	t_env	*new;
+
+	new = malloc(sizeof(t_env));
+	if (!new)
+	{
+		perror("malloc failed");
+		exit(1);
+	}
+	new->before_eq = before;
+	new->after_eq = after;
+	new->next = NULL;
+	return (new);
+}
+
+void ft_envadd_back(t_env **lst, t_env *new)
+{
+    t_env *temp;
+
+    if (!lst || !new)
+        return ;
+    if (!*lst)
+    {
+        *lst = new;
+        return ;
+    }
+    temp = *lst;
+    while (temp->next)
+        temp = temp->next;
+    temp->next = new;
+}
+
+t_exec	*ft_lstnew_exec(void *content)
+{
+	t_exec	*node;
+
+	node = malloc(sizeof(t_exec));
+	if (!node)
+		return (0);
+	node->content = content;
+	node->next = NULL;
+	return (node);
+}
+
+void ft_execadd_back(t_exec **lst, t_exec *new)
+{
+    t_exec *temp;
+
+    if (!lst || !new)
+        return ;
+    if (!*lst)
+    {
+        *lst = new;
+        return ;
+    }
+    temp = *lst;
+    while (temp->next)
+        temp = temp->next;
+    temp->next = new;
 }
