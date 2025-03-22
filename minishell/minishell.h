@@ -6,10 +6,10 @@
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdlib.h>
+# include <fcntl.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# define WHITESPACE " \t\n\v\f\r"
 
 typedef struct s_token	t_token;
 typedef struct s_env	t_env;
@@ -35,8 +35,9 @@ typedef struct s_env
 	char				*full_str;
 	char				*before_eq;
 	char				*after_eq;
-	t_main				*program;
 	struct s_env		*next;
+	t_main				*program;
+	
 }						t_env;
 
 typedef struct s_main
@@ -80,6 +81,9 @@ t_env					*a_lstnew(char *before, char *after);
 void					ft_envadd_back(t_env **lst, t_env *new);
 t_exec					*ft_lstnew_exec(void *content);
 void ft_execadd_back(t_exec **lst, t_exec *new);
+size_t	count_word(char *p, char c);
+size_t	check(char **list, size_t count);
+void exec_init(t_main *program);
 
 // signal
 void					signal_init(void);
@@ -112,6 +116,17 @@ void					set_env(t_main *program, t_env *env);
 void					get_env(t_env **envp, char **env);
 void					print_env_array(t_main *program);
 
+// free
+void	free_program(t_main *program);
+void	main_free(t_main program, char *line, int key);
+
+void	print_exec(t_exec *exec);
 void ft_builtin(t_main *program);
+void setting_str(t_main *program);
+void setting_sign(t_main *program);
+void setting_nodes(t_main *program);
+
+void execute_single_command(t_exec *cmd, char **envp);
+void execute_commands(t_exec *cmds, char **envp, int prev_fd);
 
 #endif

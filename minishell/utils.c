@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/15 14:07:47 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/21 21:54:42 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	return ((char *)d);
 }
 
-static size_t	count_word(char *p, char c)
+ size_t	count_word(char *p, char c)
 {
 	size_t	i;
 	size_t	len;
@@ -129,7 +129,7 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-static size_t	check(char **list, size_t count)
+ size_t	check(char **list, size_t count)
 {
 	if (!list[count])
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   control.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:39 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/10 21:41:11 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/22 06:07:42 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,14 @@ int	set_rank(t_token *token)
 		if (node->content != NULL && ft_strchr(node->content, '|')
 			&& node->flag == -99)
 			node->rank = 1;
-		else if (node->content != NULL && (ft_strcmp(node->content, "<") == 0
-				|| ft_strcmp(node->content, ">") == 0
-				|| ft_strcmp(node->content, ">>") == 0))
+		else if (node->content != NULL && ft_strcmp(node->content, "<") == 0)
 			node->rank = 2;
 		else if (node->content != NULL && ft_strcmp(node->content, "<<") == 0)
 			node->rank = 3;
+		else if (node->content != NULL && ft_strcmp(node->content, ">>") == 0)
+			node->rank = 5;
+		else if (node->content != NULL && ft_strcmp(node->content, ">") == 0)
+			node->rank = 6;
 		else
 			node->rank = 4;
 		node = node->next;

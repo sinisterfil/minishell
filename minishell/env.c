@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 09:21:49 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/15 17:40:30 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/21 21:47:45 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	get_env(t_env **envp, char **env)
 		index = of_strchr(env[i], 61);
 		if (index == -1)
 			continue ;
-		new = a_lstnew(ft_substr(env[i], 0, index), ft_substr(env[i], index + 1,
-					ft_strlen(env[i]) - index - 1));
+		new = a_lstnew(ft_substr(env[i], 0, index), ft_substr(env[i], index + 1, 
+			ft_strlen(env[i]) - index - 1));
 		ft_envadd_back(envp, new);
 	}
 }
@@ -36,7 +36,6 @@ void	print_env_array(t_main *program)
 	int	i;
 
 	i = 0;
-	printf("AAAAAAAA\n");
 	while (program->env_str[i])
 	{
 		printf("%s\n", program->env_str[i]);

@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built_in.c                                         :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 10:19:44 by ihancer           #+#    #+#             */
-/*   Updated: 2025/03/22 06:09:31 by hbayram          ###   ########.fr       */
+/*   Created: 2025/03/16 13:56:49 by hbayram           #+#    #+#             */
+/*   Updated: 2025/03/16 14:02:20 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void ft_builtin(t_main *program)
+void export(t_main *program, char *str)
 {
-    t_exec *node;
-    node = program->exec->next;
-    if(ft_strcmp(node->content, "env") == 0 && !node->next)
-        print_env_array(program);
-    
+     
+}
+
+
+void unset()
+{
+
 }

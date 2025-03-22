@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:16:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/11 04:14:26 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/03/22 02:44:26 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,9 @@ void	token_init(t_main *program)
 
 void	env_init(t_main *program, char **env)
 {
-	program->env = malloc(sizeof(t_env));
-	if (!program->env)
-	{
-		perror("Malloc failed");
-		exit(1);
-	}
-	program->env->full_str = NULL;
-	program->env->next = NULL;
+	t_env envp;
+
+	program->env = &envp;
 	get_env(&program->env, env);
 	set_env(program, program->env);
 }
@@ -54,7 +49,6 @@ void exec_init(t_main *program)
 	program->exec->next = NULL;
 	program->exec->rank = 4;
 }
-
 
 void	ft_init(t_main *program, char **env)
 {
