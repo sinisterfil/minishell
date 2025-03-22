@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 15:25:08 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/22 07:09:46 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/22 11:18:56 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,50 +149,61 @@ char *find_executable_path(char *cmd, char **envp)
 void handle_redirections(t_exec *cmd)
 {
     int fd;
-    while (cmd)
+    t_exec *cur = cmd;
+
+    while (cur)
     {
-		if (cmd->rank == 2)
+        if (cur->rank == 2)
         {
-            fd = open(cmd->next->content, O_RDONLY);
+            if (cur->next == NULL)
+                return;
+            fd = open(cur->next->content, O_RDONLY);
             if (fd == -1)
-                perror("open");
+            {
+                perror("open input file");
+                exit(1);
+            }
             dup2(fd, STDIN_FILENO);
             close(fd);
         }
-		else if (cmd->rank == 5)
+        else if (cur->rank == 5)
         {
-            fd = open(cmd->next->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            if (cur->next == NULL)
+                return;
+            fd = open(cur->next->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
             if (fd == -1)
-                perror("open");
+            {
+                perror("open output file (append)");
+                exit(1);
+            }
             dup2(fd, STDOUT_FILENO);
             close(fd);
         }
-		else if (cmd->rank == 6)
+        else if (cur->rank == 6)
         {
-            fd = open(cmd->next->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (cur->next == NULL)
+                return;
+            fd = open(cur->next->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if (fd == -1)
-                perror("open");
+            {
+                perror("open output file (truncate)");
+                exit(1);
+            }
             dup2(fd, STDOUT_FILENO);
             close(fd);
         }
-        // else if (cmd->rank == HEREDOC)
-        // {
-        //     // Heredoc işlemi burada yapılacak
-        // }
-        cmd = cmd->next;
+        cur = cur->next;
     }
 }
 
 void execute_single_command(t_exec *cmd, char **envp)
 {
     char *path;
-	char **str;
+    char **str;
 
     if (!cmd || !cmd->content)
-	{
         return;
-	}
-	str = ft_split(cmd->content, 32);
+    str = ft_split(cmd->content, 32);
     path = find_executable_path(str[0], envp);
     if (!path)
     {
@@ -201,7 +212,7 @@ void execute_single_command(t_exec *cmd, char **envp)
     }
     handle_redirections(cmd);
     execve(path, str, envp);
-    perror("execve");
+    perror("execve failed");
     exit(1);
 }
 
@@ -218,7 +229,7 @@ void execute_commands(t_exec *cmds, char **envp, int prev_fd)
     pid = fork();
     if (pid == 0)
     {
-		if (cmd->next && cmd->next->rank == 1)
+        if (cmd->next && cmd->next->rank == 1)
         {
             dup2(pipe_fd[1], STDOUT_FILENO);
             close(pipe_fd[1]);
@@ -230,8 +241,7 @@ void execute_commands(t_exec *cmds, char **envp, int prev_fd)
             close(prev_fd);
         }
         execute_single_command(cmd, envp);
-		handle_redirections(cmd);
-        perror("execve");
+        perror("execve failed");
         exit(1);
     }
     if (prev_fd != -1)
