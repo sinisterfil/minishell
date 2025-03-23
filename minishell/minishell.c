@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/22 05:44:48 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/23 18:51:18 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	print_token(t_token *list)
 		printf("%s\n", list->content);
 		printf("%d\n", list->space);
 		printf("%d\n", list->flag);
-		printf("RANK %d\n", list->rank);
+		printf("RANK %d\n\n", list->rank);
 		list = list->next;
 	}
 }
@@ -55,12 +55,24 @@ int	parsing(char *line, t_main *program)
 	return 0;
 }
 
+void print_exec_list(t_exec *cmd)
+{
+    while (cmd)
+    {
+        printf("NODE: content='%s', rank=%d, space=%d\n",
+               cmd->content ? cmd->content : "(null)",
+               cmd->rank, cmd->space);
+        cmd = cmd->next;
+    }
+}
+
 void	executing(t_main *program)
 {
 	setting_nodes(program);
 	print_exec(program->exec->next);
 	ft_builtin(program);
-	execute_commands(program->exec->next, program->env_str, -1);
+	//print_exec_list(program->exec->next);
+	execute_commands(program->exec->next, program->env_str, -1) ;
 }
 
 int	main(int ac, char **av, char **env)

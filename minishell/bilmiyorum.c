@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 12:24:37 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/22 06:09:16 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/23 15:23:53 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	separate_two(t_token *token, char *content, int len, int location)
 		new->next = temp;
 		free(token->content);
 		token->content = ft_strdup(content);
+		new->space = token->space;
+		token->space = 0;
 	}
 	else
 	{
@@ -37,6 +39,8 @@ void	separate_two(t_token *token, char *content, int len, int location)
 					- len));
 		free(token->content);
 		token->content = str;
+		new->space = token->space;
+		token->space = 0;
 	}
 }
 
@@ -59,6 +63,9 @@ void	separate_three(t_token *token, char *content, int len, int location)
 	free(token->content);
 	token->content = ft_substr(str, 0, location);
 	free(str);
+	new->space = 0;
+	last->space = token->space;
+	token->space = 0;
 }
 
 void	arrange_tokens(t_token *token, char *content, int len)
@@ -101,7 +108,7 @@ void	new_func(t_token *temp)
 		else
 			arrange_tokens(temp, "<", 1);
 	}
-	if (temp->content != NULL && ft_strchr(temp->content, '|'))
+	if (temp->content != NULL && ft_strchr(temp->content, '|'))  
 		arrange_tokens(temp, "|", 1);
 }
 

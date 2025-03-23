@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/22 07:30:03 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/23 18:35:35 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -402,6 +402,8 @@ t_exec	*ft_lstnew_exec(void *content)
 	if (!node)
 		return (0);
 	node->content = content;
+	node->space = 0;
+	node->tick = 0;
 	node->next = NULL;
 	return (node);
 }

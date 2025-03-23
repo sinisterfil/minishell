@@ -53,6 +53,8 @@ typedef struct s_exec
 {
 	char				*content;
 	int					rank;
+	int					tick;
+	int					space;
 	struct s_exec		*next;
 	t_main				*program;
 
@@ -128,5 +130,6 @@ void setting_nodes(t_main *program);
 
 void execute_single_command(t_exec *cmd, char **envp);
 void execute_commands(t_exec *cmds, char **envp, int prev_fd);
+
 
 #endif

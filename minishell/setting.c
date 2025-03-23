@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 15:25:08 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/22 11:18:56 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/23 18:46:09 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void setting_sign(t_main *program)
 	while (node->tick == 1)
 		node = node->next;
 	add = ft_strjoin(ft_strdup(""), ft_strdup(""));
-	while(node && node->rank == 4)
+	while(node && node->rank == 4 && node->space == 0)
 	{
 		str = ft_strjoin(ft_strdup(add), ft_strdup(node->content));
 		free(add);
@@ -74,10 +74,20 @@ void setting_sign(t_main *program)
 		new->rank = 4;
 		ft_execadd_back(&program->exec, new);
 	}
+    if (node && node->space == 1)
+    {
+        new_node = ft_lstnew_exec(ft_strdup(node->content));
+		new_node->rank = node->rank;
+        new_node->space = node->space;
+		ft_execadd_back(&program->exec, new_node);
+		node->tick = 1;
+		node = node->next;
+    }
 	if (node && node->rank != 4)
 	{
 		new_node = ft_lstnew_exec(ft_strdup(node->content));
 		new_node->rank = node->rank;
+        new_node->space = node->space;
 		ft_execadd_back(&program->exec, new_node);
 		node->tick = 1;
 		node = node->next;
@@ -89,23 +99,24 @@ void setting_sign(t_main *program)
 
 void setting_nodes(t_main *program)
 {
-	t_token *node;
-	int sign;
+	// t_token *node;
+	// int sign;
 
-	sign = 0;
-	node = program->token->next;
-	while(node)
-	{
-		if(node->rank != 4)
-		{
-			setting_sign(program);
-			sign = 1;
-			break;
-		}
-		node = node->next;
-	}
-	if(sign == 0)
-		setting_str(program);
+	// sign = 0;
+	// node = program->token->next;
+	// while(node)
+	// {
+	// 	if(node->rank != 4)
+	// 	{
+	// 		setting_sign(program);
+	// 		sign = 1;
+	// 		break;
+	// 	}
+	// 	node = node->next;
+	// }
+	setting_sign(program);
+	// if(sign == 0)
+	// 	setting_str(program);
 }
 
 char *find_executable_path(char *cmd, char **envp)
@@ -196,6 +207,44 @@ void handle_redirections(t_exec *cmd)
     }
 }
 
+char **command_join(t_exec *cmd)
+{
+    t_exec *temp;
+    char **str;
+    int i;
+    int j;
+
+    temp = cmd;
+    i = 0;
+    j = 0;
+    while(temp && temp->tick == 1)
+        temp = temp->next;
+    while(temp && temp->tick == 0)
+    {
+        if(temp->rank != 4)
+            break;
+        temp->tick = 1;
+        i++;
+        temp = temp->next;
+    }
+	str = (char **)malloc(sizeof(char *) * (i + 1));
+	if (!str)
+		return (NULL);
+    while(cmd && i--)
+    {
+        str[j] = ft_strdup(cmd->content);
+        cmd = cmd->next;
+        j++;
+    }
+    j = 0;
+    while (str[j])
+    {
+        printf("%d - %s\n", j, str[j]);
+        j++;
+    }
+    return (str);
+}
+
 void execute_single_command(t_exec *cmd, char **envp)
 {
     char *path;
@@ -203,7 +252,7 @@ void execute_single_command(t_exec *cmd, char **envp)
 
     if (!cmd || !cmd->content)
         return;
-    str = ft_split(cmd->content, 32);
+    str = command_join(cmd);
     path = find_executable_path(str[0], envp);
     if (!path)
     {
