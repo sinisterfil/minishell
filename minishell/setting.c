@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 15:25:08 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/23 18:46:09 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/24 17:02:26 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,14 +125,14 @@ char *find_executable_path(char *cmd, char **envp)
 	if (cmd[0] == '/')
     {
         if (access(cmd, X_OK) == 0)
-            return strdup(cmd);
+            return (ft_strdup(cmd));
         else
             return NULL;
     }
     char *path_env = getenv("PATH");
     if (!path_env)
         return NULL;
-    char *path_copy = strdup(path_env);
+    char *path_copy = ft_strdup(path_env);
     if (!path_copy)
         return NULL;
     char *dir = strtok(path_copy, ":");
@@ -217,7 +217,7 @@ char **command_join(t_exec *cmd)
     temp = cmd;
     i = 0;
     j = 0;
-    while(temp && temp->tick == 1)
+    while(temp && temp->tick == 1 && j++)
         temp = temp->next;
     while(temp && temp->tick == 0)
     {
@@ -230,10 +230,12 @@ char **command_join(t_exec *cmd)
 	str = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!str)
 		return (NULL);
-    while(cmd && i--)
+    str[i] = NULL;
+    temp = cmd;
+    while(temp && i--)
     {
-        str[j] = ft_strdup(cmd->content);
-        cmd = cmd->next;
+        str[j] = ft_strdup(temp->content);
+        temp = temp->next;
         j++;
     }
     j = 0;
@@ -252,7 +254,7 @@ void execute_single_command(t_exec *cmd, char **envp)
 
     if (!cmd || !cmd->content)
         return;
-    str = command_join(cmd);
+    str = command_join(cmd);   
     path = find_executable_path(str[0], envp);
     if (!path)
     {
@@ -265,40 +267,95 @@ void execute_single_command(t_exec *cmd, char **envp)
     exit(1);
 }
 
+t_exec *if_pipe(t_exec *cmd, t_exec *temp)
+{
+    temp = cmd;
+    while(temp)
+    {
+        if(temp->rank == 1)
+            return (temp);
+        temp = temp->next;
+    }
+    return (NULL);
+}
+
 void execute_commands(t_exec *cmds, char **envp, int prev_fd)
 {
     int pipe_fd[2];
     pid_t pid;
     t_exec *cmd = cmds;
+    t_exec *temp;
 
+    temp = cmd;
     if (!cmd)
         return;
-    if (cmd->next && cmd->next->rank == 1)
+    if (if_pipe(cmd, temp))
         pipe(pipe_fd);
     pid = fork();
+    // printf("aaa %d\n", pid);
     if (pid == 0)
     {
-        if (cmd->next && cmd->next->rank == 1)
+        if (if_pipe(cmd, temp))
         {
+            // printf("bbb %s\n", cmd->content);
+            close(pipe_fd[0]);
             dup2(pipe_fd[1], STDOUT_FILENO);
             close(pipe_fd[1]);
-            close(pipe_fd[0]);
         }
         if (prev_fd != -1)
         {
+            // printf("ccc %s\n", cmd->content);
             dup2(prev_fd, STDIN_FILENO);
             close(prev_fd);
         }
         execute_single_command(cmd, envp);
-        perror("execve failed");
-        exit(1);
     }
     if (prev_fd != -1)
         close(prev_fd);
-    if (cmd->next && cmd->next->rank == 1)
+    if (if_pipe(cmd, temp))
     {
+        temp = if_pipe(cmd, temp);
+        // printf("%s\n", temp->content);
+        // printf("%s\n", cmd->content);
         close(pipe_fd[1]);
-        execute_commands(cmd->next->next, envp, pipe_fd[0]);
+        execute_commands(temp->next, envp, pipe_fd[0]);
     }
     waitpid(pid, NULL, 0);
+
 }
+
+// void execute_commands(t_exec *cmds, char **envp, int prev_fd)
+// {
+//     int pipe_fd[2];
+//     pid_t pid;
+//     t_exec *cmd = cmds;
+
+//     if (!cmd)
+//         return;
+//     if (cmd->next && cmd->next->rank == 1)
+//         pipe(pipe_fd);
+//     pid = fork();
+//     if (pid == 0)
+//     {
+//         if (cmd->next && cmd->next->rank == 1)
+//         {
+//             dup2(pipe_fd[1], STDOUT_FILENO);
+//             close(pipe_fd[1]);
+//             close(pipe_fd[0]);
+//         }
+//         if (prev_fd != -1)
+//         {
+//             dup2(prev_fd, STDIN_FILENO);
+//             close(prev_fd);
+//         }
+//         execute_single_command(cmd, envp);
+//     }
+//     if (prev_fd != -1)
+//         close(prev_fd);
+//     if (cmd->next && cmd->next->rank == 1)
+//     {
+//         close(pipe_fd[1]);
+//         execute_commands(cmd->next->next, envp, pipe_fd[0]);
+//     }
+//     waitpid(pid, NULL, 0);
+// }

@@ -86,6 +86,7 @@ void ft_execadd_back(t_exec **lst, t_exec *new);
 size_t	count_word(char *p, char c);
 size_t	check(char **list, size_t count);
 void exec_init(t_main *program);
+int	space_control(const char *s);
 
 // signal
 void					signal_init(void);

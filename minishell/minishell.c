@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/23 18:51:18 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/24 15:45:09 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,17 @@ int	main(int ac, char **av, char **env)
 	signal_init();
 	while (1)
 	{
-
 		ft_init(&program, env);
 		line = readline("ilknur&&eslem<3 ");
+		
 		if (line == NULL) // Eğer Ctrl-D ile EOF alırsak,
 			//readline() NULL döndürecektir
 		{
 			printf("exit\n");
 			break ;
 		}
+		else if(space_control(line) == 0)
+			continue;
 		else if (ft_strlen(line) > 0)
 		{ 
 			add_history(line);

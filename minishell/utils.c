@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/23 18:35:35 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/03/24 13:55:24 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -423,4 +423,20 @@ void ft_execadd_back(t_exec **lst, t_exec *new)
     while (temp->next)
         temp = temp->next;
     temp->next = new;
+}
+
+int	space_control(const char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s[0])
+		return (1);
+	while (s[i])
+	{
+		if (s[i] != ' ')
+			return (1);
+		i++;
+	}
+	return (0);
 }
