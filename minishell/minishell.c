@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/24 15:45:09 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/18 16:32:21 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,90 @@ void print_exec_list(t_exec *cmd)
 {
     while (cmd)
     {
-        printf("NODE: content='%s', rank=%d, space=%d\n",
+        printf("NODE: content  =   %s, rank = %d, space = %d\n",
                cmd->content ? cmd->content : "(null)",
                cmd->rank, cmd->space);
         cmd = cmd->next;
     }
 }
+void print_executor(t_executor *executer)
+{
+	int i = 0;
+	while (executer->argv[i])
+	{
+		printf("argv[%d]: ", i);
+		int j = 0;
+		while (executer->argv[i][j])
+		{
+			printf("\"%s\" ", executer->argv[i][j]);
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
+}
+
+
+void set_executor(t_exec *exec)
+{
+	t_exec *node;
+	t_executor *temp;
+	int i;
+	int j;
+	
+	i = 0;
+	node = exec;
+	temp = malloc(sizeof(t_executor));
+	if (!temp)
+		return ; // malloc başarısız
+
+	// Komut sayısını bul
+	while (node)
+	{
+		if (node->rank != 4)
+			i++;
+		node = node->next;
+	}
+
+	temp->argv = (char ***)malloc(sizeof(char **) * (i + 1)); // +1 NULL için
+	if (!temp->argv)
+		return ;
+
+	node = exec;
+	i = 0;
+	while (node)
+	{
+		if (node->rank != 4)
+		{
+			// Her yeni komut bloğu için max 100 argümanlık yer ayır (veya arg count hesaplayabilirsin)
+			temp->argv[i] = (char **)malloc(sizeof(char *) * 100); // sabit tuttum minimum değişiklik için
+			if (!temp->argv[i])
+				return ;
+			j = 0;
+			node = node->next;
+			while (node && node->rank == 4)
+			{
+				temp->argv[i][j++] = ft_strdup(node->content);
+				node = node->next;
+			}
+			temp->argv[i][j] = NULL; // argv[i] null-terminate
+			i++;
+		}
+		else
+			node = node->next;
+	}
+	temp->argv[i] = NULL; // dış array'i null-terminate et
+	exec->executer = temp;
+}
 
 void	executing(t_main *program)
 {
-	setting_nodes(program);
-	print_exec(program->exec->next);
+	setting_sign(program);
+	
+	set_executor(program->exec);
+	print_executor(program->exec->executer);
 	ft_builtin(program);
 	//print_exec_list(program->exec->next);
-	execute_commands(program->exec->next, program->env_str, -1) ;
 }
 
 int	main(int ac, char **av, char **env)

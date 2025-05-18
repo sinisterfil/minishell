@@ -49,12 +49,43 @@ typedef struct s_main
 
 }						t_main;
 
+typedef struct s_redirect
+{
+	int					type;
+	char				*filename;
+	struct s_redirect	*next;
+}						t_redirect;
+
+typedef struct s_files
+{
+	int					fd_heredoc[2];
+	int					fd_input;
+	int					fd_output;
+	int					error;
+	char				*input;
+	char				*output;
+	char				*heredoc;
+}						t_files;
+
+typedef struct s_executor
+{
+	char				***argv;
+	pid_t				pid;
+	t_files				*files;
+	t_redirect			*redirect;
+	struct s_executor	*next;
+}						t_executor;
+
+
 typedef struct s_exec
 {
 	char				*content;
 	int					rank;
 	int					tick;
 	int					space;
+	int					pipe;
+	int					**fd;
+	t_executor			*executer;
 	struct s_exec		*next;
 	t_main				*program;
 
@@ -127,10 +158,10 @@ void	print_exec(t_exec *exec);
 void ft_builtin(t_main *program);
 void setting_str(t_main *program);
 void setting_sign(t_main *program);
-void setting_nodes(t_main *program);
 
-void execute_single_command(t_exec *cmd, char **envp);
-void execute_commands(t_exec *cmds, char **envp, int prev_fd);
 
+//exec
+
+void pipe_count(t_exec *node);
 
 #endif
