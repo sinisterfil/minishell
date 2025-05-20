@@ -14,13 +14,13 @@ SRCS = 	minishell.c\
 		free.c\
 		
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -lreadline -lhistory -lncurses #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g #-lhistory -lncurses #-fsanitize=address
 OBJS = $(SRCS:.c=.o)
 RM = rm -f
 
 all: ${NAME}
 ${NAME}: ${OBJS}
-	@${CC} ${CFLAGS} ${OBJS} -o ${NAME}
+	@${CC} ${CFLAGS} ${OBJS} -o ${NAME} -lreadline
 
 clean: 
 	@${RM} ${OBJS}

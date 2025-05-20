@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/18 16:32:21 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/20 18:39:29 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,84 +65,48 @@ void print_exec_list(t_exec *cmd)
         cmd = cmd->next;
     }
 }
-void print_executor(t_executor *executer)
+
+void pipe_count(t_exec *node)
 {
-	int i = 0;
-	while (executer->argv[i])
-	{
-		printf("argv[%d]: ", i);
-		int j = 0;
-		while (executer->argv[i][j])
-		{
-			printf("\"%s\" ", executer->argv[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
+    t_exec *new;
+    int i;
+
+    new = node;
+    i = 0;
+    while (new)
+    {
+        if(new->rank == 1)
+            i++;
+        new = new->next;
+    }
+    node->pipe = i;
 }
 
-
-void set_executor(t_exec *exec)
+void	prep_exec(t_main *program)
 {
-	t_exec *node;
-	t_executor *temp;
+	t_executor **node;
 	int i;
-	int j;
-	
-	i = 0;
-	node = exec;
-	temp = malloc(sizeof(t_executor));
-	if (!temp)
-		return ; // malloc başarısız
+	int count;
 
-	// Komut sayısını bul
-	while (node)
-	{
-		if (node->rank != 4)
-			i++;
-		node = node->next;
-	}
-
-	temp->argv = (char ***)malloc(sizeof(char **) * (i + 1)); // +1 NULL için
-	if (!temp->argv)
-		return ;
-
-	node = exec;
-	i = 0;
-	while (node)
-	{
-		if (node->rank != 4)
-		{
-			// Her yeni komut bloğu için max 100 argümanlık yer ayır (veya arg count hesaplayabilirsin)
-			temp->argv[i] = (char **)malloc(sizeof(char *) * 100); // sabit tuttum minimum değişiklik için
-			if (!temp->argv[i])
-				return ;
-			j = 0;
-			node = node->next;
-			while (node && node->rank == 4)
-			{
-				temp->argv[i][j++] = ft_strdup(node->content);
-				node = node->next;
-			}
-			temp->argv[i][j] = NULL; // argv[i] null-terminate
-			i++;
-		}
-		else
-			node = node->next;
-	}
-	temp->argv[i] = NULL; // dış array'i null-terminate et
-	exec->executer = temp;
-}
-
-void	executing(t_main *program)
-{
+	count = 0;
 	setting_sign(program);
+	pipe_count(program->exec);
+	i = program->exec->pipe + 2;
+	node = malloc(sizeof(t_executor *) * (i));
+	if (!node)
+		return ; // exit 
+	while (count < i)
+	{
+		node[i] = malloc(sizeof(t_executor *) * (i));
+		if (!node[i])
+		{
+			while (--i > 0)
+				free(node[i]);
+			free(node);
+		}
+	}
+	print_exec_list(program->exec->next);
 	
-	set_executor(program->exec);
-	print_executor(program->exec->executer);
-	ft_builtin(program);
-	//print_exec_list(program->exec->next);
 }
 
 int	main(int ac, char **av, char **env)
@@ -171,7 +135,7 @@ int	main(int ac, char **av, char **env)
 		{ 
 			add_history(line);
 			if (parsing(line, &program) == 0)
-				executing(&program);
+				prep_exec(&program);
 		}
 		main_free(program, line, 0);
 	}

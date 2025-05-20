@@ -1,12 +1,12 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
+# include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdio.h>
 # include <stdlib.h>
-# include <fcntl.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
@@ -23,7 +23,7 @@ typedef struct s_token
 	int					flag;
 	int					space;
 	int					dollar;
-	int 				tick;
+	int					tick;
 	t_main				*program;
 
 	struct s_token		*next;
@@ -37,7 +37,7 @@ typedef struct s_env
 	char				*after_eq;
 	struct s_env		*next;
 	t_main				*program;
-	
+
 }						t_env;
 
 typedef struct s_main
@@ -49,33 +49,16 @@ typedef struct s_main
 
 }						t_main;
 
-typedef struct s_redirect
-{
-	int					type;
-	char				*filename;
-	struct s_redirect	*next;
-}						t_redirect;
-
-typedef struct s_files
-{
-	int					fd_heredoc[2];
-	int					fd_input;
-	int					fd_output;
-	int					error;
-	char				*input;
-	char				*output;
-	char				*heredoc;
-}						t_files;
-
 typedef struct s_executor
 {
-	char				***argv;
-	pid_t				pid;
-	t_files				*files;
-	t_redirect			*redirect;
+	char				**argv;
+	char				*outfile;
+	char				*infile;
+	char				*heredoc;
+	char				*append_outfile;
+	int 				pipe;
 	struct s_executor	*next;
 }						t_executor;
-
 
 typedef struct s_exec
 {
@@ -83,13 +66,14 @@ typedef struct s_exec
 	int					rank;
 	int					tick;
 	int					space;
-	int					pipe;
-	int					**fd;
-	t_executor			*executer;
+	int 				pipe;
+	t_executor			**executer;
 	struct s_exec		*next;
 	t_main				*program;
 
 }						t_exec;
+
+
 
 // utils
 char					**ft_split(char *s, char c);
@@ -113,11 +97,11 @@ int						of_strchr(const char *s, int c);
 t_env					*a_lstnew(char *before, char *after);
 void					ft_envadd_back(t_env **lst, t_env *new);
 t_exec					*ft_lstnew_exec(void *content);
-void ft_execadd_back(t_exec **lst, t_exec *new);
-size_t	count_word(char *p, char c);
-size_t	check(char **list, size_t count);
-void exec_init(t_main *program);
-int	space_control(const char *s);
+void					ft_execadd_back(t_exec **lst, t_exec *new);
+size_t					count_word(char *p, char c);
+size_t					check(char **list, size_t count);
+void					exec_init(t_main *program);
+int						space_control(const char *s);
 
 // signal
 void					signal_init(void);
@@ -151,17 +135,15 @@ void					get_env(t_env **envp, char **env);
 void					print_env_array(t_main *program);
 
 // free
-void	free_program(t_main *program);
-void	main_free(t_main program, char *line, int key);
+void					free_program(t_main *program);
+void					main_free(t_main program, char *line, int key);
 
-void	print_exec(t_exec *exec);
-void ft_builtin(t_main *program);
-void setting_str(t_main *program);
-void setting_sign(t_main *program);
+void					ft_builtin(t_main *program);
+void					setting_str(t_main *program);
+void					setting_sign(t_main *program);
 
+// exec
 
-//exec
-
-void pipe_count(t_exec *node);
+void					pipe_count(t_exec *node);
 
 #endif
