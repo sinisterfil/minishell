@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/20 18:39:29 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/05/20 19:32:06 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,49 +64,6 @@ void print_exec_list(t_exec *cmd)
                cmd->rank, cmd->space);
         cmd = cmd->next;
     }
-}
-
-void pipe_count(t_exec *node)
-{
-    t_exec *new;
-    int i;
-
-    new = node;
-    i = 0;
-    while (new)
-    {
-        if(new->rank == 1)
-            i++;
-        new = new->next;
-    }
-    node->pipe = i;
-}
-
-void	prep_exec(t_main *program)
-{
-	t_executor **node;
-	int i;
-	int count;
-
-	count = 0;
-	setting_sign(program);
-	pipe_count(program->exec);
-	i = program->exec->pipe + 2;
-	node = malloc(sizeof(t_executor *) * (i));
-	if (!node)
-		return ; // exit 
-	while (count < i)
-	{
-		node[i] = malloc(sizeof(t_executor *) * (i));
-		if (!node[i])
-		{
-			while (--i > 0)
-				free(node[i]);
-			free(node);
-		}
-	}
-	print_exec_list(program->exec->next);
-	
 }
 
 int	main(int ac, char **av, char **env)

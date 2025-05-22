@@ -145,5 +145,7 @@ void					setting_sign(t_main *program);
 // exec
 
 void					pipe_count(t_exec *node);
+void					prep_exec(t_main *program);
+char					**set_argv(t_exec *temp, int i);
 
 #endif
