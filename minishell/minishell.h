@@ -54,7 +54,7 @@ typedef struct s_executor
 	char				**argv;
 	char				*outfile;
 	char				*infile;
-	char				*heredoc;
+	char				**heredoc;
 	char				*append_outfile;
 	int 				pipe;
 	struct s_executor	*next;
