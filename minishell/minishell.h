@@ -10,6 +10,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+#include <sys/stat.h>
 
 typedef struct s_token	t_token;
 typedef struct s_env	t_env;
@@ -54,8 +55,9 @@ typedef struct s_executor
 	char				**argv;
 	char				*outfile;
 	char				*infile;
-	char				**heredoc;
-	char				*append_outfile;
+	char				*heredoc_file;
+	char				**heredoc_delimiters;
+	char				*append;
 	int 				pipe;
 	struct s_executor	*next;
 }						t_executor;
@@ -146,6 +148,6 @@ void					setting_sign(t_main *program);
 
 void					pipe_count(t_exec *node);
 void					prep_exec(t_main *program);
-char					**set_argv(t_exec *temp, int i);
+void					set_argv(t_exec *temp, int i);
 
 #endif
