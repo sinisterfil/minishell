@@ -9,11 +9,12 @@ SRCS = 	minishell.c\
 		control.c\
 		bilmiyorum.c\
 		env.c\
-		built_in.c\
 		setting.c\
 		free.c\
+		exec.c\
+		redirect.c\
 		
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -g #-lhistory -lncurses #-fsanitize=address
 OBJS = $(SRCS:.c=.o)
 RM = rm -f
