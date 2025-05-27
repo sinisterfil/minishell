@@ -44,6 +44,8 @@ typedef struct s_env
 
 typedef struct s_main
 {
+	int control;
+	int exit_status;
 	char **env_str;
 	t_token *token;
 	t_env *env;
@@ -57,9 +59,10 @@ typedef struct s_executor
 	char **argv;
 	char *outfile;
 	char *infile;
-	char				*heredoc_file;
+	int				heredoc_file;
 	char				**heredoc_delimiters;
 	char *append;
+	char *error;
 	int pipe;
 	struct s_executor *next;
 	t_main *program;
@@ -104,7 +107,7 @@ void ft_execadd_back(t_exec **lst, t_exec *new);
 size_t count_word(char *p, char c);
 size_t check(char **list, size_t count);
 void exec_init(t_main *program);
-int space_control(const char *s);
+int space_control(char *s);
 
 // signal
 void signal_init(void);
@@ -138,13 +141,17 @@ void get_env(t_env **envp, char **env);
 void print_env_array(t_main *program);
 
 // free
-void free_program(t_main *program);
+void free_program(t_main *program, int key);
 void main_free(t_main program, char *line, int key);
-
+void free_env(t_main *program);
+void free_exec(t_main *program);
 void ft_builtin(t_main *program);
 void setting_str(t_main *program);
 void setting_sign(t_main *program);
+void	free_executer(t_main *program);
 
+//init
+void	env_init(t_main *program, char **env);
 // exec
 
 void pipe_count(t_exec *node);
@@ -153,12 +160,14 @@ t_exec *set_argv(t_executor **node, t_exec *start, int i);
 
 //redirect
 void	set_heredoc(t_exec *current, t_executor *cmd, int i);
-char	*is_directory(const char *path, char *error);
-void	check_redirect_access_input(const char *filename, char *error);
-int	check_redirect_access(const char *filename, int rank, char *error);
+char	*is_directory(const char *path);
+void	check_redirect_access_input(const char *filename, t_executor *cmd);
+int	check_redirect_access(const char *filename, int rank, char **error);
 void	check_redirect_file(t_executor *cmd, char *filename, int rank);
 void	set_redirect(t_exec *current, t_executor *cmd);
 void	redirect_handle(t_executor *node);
 
+
+void free_token(t_main *program);
 
 #endif

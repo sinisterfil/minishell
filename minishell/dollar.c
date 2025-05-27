@@ -80,8 +80,3 @@ void	dollar_control(t_token *token)
 		token = token->next;
 	}
 }
-
-// void question_mark(char *content, int index)
-// {
-//     content =
-// }

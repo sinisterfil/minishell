@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 12:24:37 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/23 15:23:53 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/27 14:10:44 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ void	separate_two(t_token *token, char *content, int len, int location)
 	t_token	*temp;
 	t_token	*new;
 	char	*str;
+	char	*tmp;
 
 	temp = token->next;
 	if (location == 0)
 	{
-		new = ft_lstnew(ft_substr(token->content, len, ft_strlen(token->content)
-					- len));
+		new = ft_lstnew(ft_substr(token->content, len, ft_strlen(token->content) - len));
 		token->next = new;
 		new->next = temp;
 		free(token->content);
@@ -35,8 +35,9 @@ void	separate_two(t_token *token, char *content, int len, int location)
 		new = ft_lstnew(ft_strdup(content));
 		token->next = new;
 		new->next = temp;
-		str = ft_strdup(ft_substr(token->content, 0, ft_strlen(token->content)
-					- len));
+		tmp = ft_substr(token->content, 0, ft_strlen(token->content) - len);
+		str = ft_strdup(tmp);
+		free(tmp);
 		free(token->content);
 		token->content = str;
 		new->space = token->space;

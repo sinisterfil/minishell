@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:27 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/24 13:55:24 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/27 14:22:31 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,8 +313,9 @@ t_token	*ft_lstnew(void *content)
 	node = malloc(sizeof(t_token));
 	if (!node)
 		return (0);
-	node->content = content;
+	node->content = content;  // ls|
 	node->rank = 0;
+	node->tick = 0;
 	node->flag = -99;
 	node->next = NULL;
 	return (node);
@@ -425,13 +426,13 @@ void ft_execadd_back(t_exec **lst, t_exec *new)
     temp->next = new;
 }
 
-int	space_control(const char *s)
+int	space_control(char *s)
 {
 	int	i;
 
 	i = 0;
 	if (!s[0])
-		return (1);
+		return (0);
 	while (s[i])
 	{
 		if (s[i] != ' ')

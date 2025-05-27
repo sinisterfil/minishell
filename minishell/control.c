@@ -6,22 +6,21 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:39 by hbayram           #+#    #+#             */
-/*   Updated: 2025/03/22 06:07:42 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/27 17:11:47 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	set_rank(t_token *token)
+int set_rank(t_token *token)
 {
-	t_token	*node;
+	t_token *node;
 
 	node = token;
 	node = node->next;
 	while (node != NULL)
 	{
-		if (node->content != NULL && ft_strchr(node->content, '|')
-			&& node->flag == -99)
+		if (node->content != NULL && ft_strchr(node->content, '|') && node->flag == -99)
 			node->rank = 1;
 		else if (node->content != NULL && ft_strcmp(node->content, "<") == 0)
 			node->rank = 2;
@@ -40,21 +39,19 @@ int	set_rank(t_token *token)
 	return (1);
 }
 
-int	pipe_control(t_token *token)
+int pipe_control(t_token *token)
 {
-	t_token	*node;
+	t_token *node;
 
 	node = token->next;
-	if (node != NULL && (node->rank == 1 || node->rank == 3
-			|| ft_lstlast(node)->rank != 4))
+	if (node != NULL && (node->rank == 1 || node->rank == 6 || node->rank == 5 || ft_lstlast(node)->rank != 4))
 		return (printf("error, unexpected token\n"), 1);
 	while (node != NULL && node->next != NULL)
 	{
 		if (node->next && node->next->rank != 4)
 		{
-			if (node->rank != 4 || (node->next->next != NULL
-					&& node->next->next->rank != 4))
-				return (printf("error, unexpected token\n"), 1);
+			if ((node->rank != 4 && node->rank != 1) || (node->next->next != NULL && node->next->next->rank != 4 && node->next->rank != 1))
+				return (printf("error, unexpecteed token\n"), 1);
 		}
 		node = node->next;
 	}
@@ -62,10 +59,10 @@ int	pipe_control(t_token *token)
 	return (0);
 }
 
-int	quote_control(char *line)
+int quote_control(char *line)
 {
-	int	i;
-	int	flag;
+	int i;
+	int flag;
 
 	flag = 0;
 	i = 0;

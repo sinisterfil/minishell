@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 17:18:43 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/24 15:56:33 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/05/27 12:56:28 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	set_heredoc(t_exec *current, t_executor *cmd, int i)
+void set_heredoc(t_exec *current, t_executor *cmd, int i)
 {
 	if (current && current->next)
 	{
@@ -20,94 +20,93 @@ void	set_heredoc(t_exec *current, t_executor *cmd, int i)
 		{
 			cmd->heredoc_delimiters = malloc(sizeof(char *) * 10);
 			if (!cmd->heredoc_delimiters)
-				exit(1); // exit fonksiyonu
+				exit(1);
 		}
 		cmd->heredoc_delimiters[i] = ft_strdup(current->next->content);
 	}
 }
 
-char	*is_directory(const char *path, char *error)
+char *is_directory(const char *path)
 {
-	struct stat	st;
+	struct stat st;
 
 	if (stat(path, &st) == -1)
-		return error;
+		return NULL;
 	if (S_ISDIR(st.st_mode))
-	{
-		error = ft_strdup(": Is a directory");
-	}
-	return error;
+		return ft_strdup(": Is a directory");
+	return NULL;
 }
 
-void	check_redirect_access_input(const char *filename, char *error)
+void check_redirect_access_input(const char *filename, t_executor *cmd)
 {
-	error = is_directory(filename, error);
-	if(error)
+	char *err;
+
+	err = is_directory(filename);
+	if (err)
+	{
+		cmd->error = err;
 		return;
+	}
 	if (access(filename, F_OK) < 0)
 	{
-		error = ft_strdup(": No such file or directory");
+		cmd->error = ft_strdup(": No such file or directory");
 		return;
 	}
 	if (access(filename, R_OK) < 0)
 	{
-		error = ft_strdup(": Permission denied");
+		cmd->error = ft_strdup(": Permission denied");
 		return;
 	}
 }
 
-int	check_redirect_access(const char *filename, int rank, char *error)
+int check_redirect_access(const char *filename, int rank, char **error)
 {
-	int	fd;
-	int	flags;
+	int fd;
+	int flags;
+	char *err;
 
-	is_directory(filename, error);
-	if(*error)
-		return(-1);
+	err = is_directory(filename);
+	if (err)
+	{
+		*error = err;
+		return -1;
+	}
 	if (access(filename, F_OK) == 0 && access(filename, W_OK) < 0)
 	{
-		error = ft_strdup(": Permission denied");
-		return (-1);
+		*error = ft_strdup(": Permission denied");
+		return -1;
 	}
-	if (rank == 6) // >
+	flags = 0;
+	if (rank == 6)
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
-	else if (rank == 5) // >>
+	else if (rank == 5)
 		flags = O_WRONLY | O_CREAT | O_APPEND;
-	else
-		return (-1);
 	fd = open(filename, flags, 0644);
 	if (fd < 0)
 	{
-		error = ft_strdup(": Failed to open file");
+		if (*error)
+			return -1; //saçmalık
+		*error = ft_strdup(": Failed to open file");
 		return -1;
 	}
 	close(fd);
-	return (0);
+	return 0;
 }
 
-void	check_redirect_file(t_executor *cmd, char *filename, int rank)
+void check_redirect_file(t_executor *cmd, char *filename, int rank)
 {
-	char	*error;
-	
-	error = NULL;
 	if (rank == 2)
 	{
-		check_redirect_access_input(filename, error);
-		if (error)
-		{
-			printf("minishell: %s %s\n", filename, error);
-			exit(1); // exit fonksiyonu yazılmalı
-		}
+		check_redirect_access_input(filename, cmd);
+		if (cmd->error)
+			return;
 		free(cmd->infile);
 		cmd->infile = ft_strdup(filename);
 	}
 	else if (rank == 6 || rank == 5)
 	{
-		if (check_redirect_access(filename, rank, error) < 0)
-		{
-			printf("minishell: %s %s\n", filename, error);
-			exit(1); // exit fonksiyonu yazılmalı
-		}
+		if (check_redirect_access(filename, rank, &cmd->error) < 0)
+			return;
 		if (rank == 6)
 		{
 			free(cmd->outfile);
@@ -121,24 +120,24 @@ void	check_redirect_file(t_executor *cmd, char *filename, int rank)
 	}
 }
 
-void	set_redirect(t_exec *current, t_executor *cmd)
+void set_redirect(t_exec *current, t_executor *cmd)
 {
-	char	*filename;
+	char *filename;
 
 	while (current && current->next && current->rank != 1 && current->rank != 4)
 	{
 		filename = ft_strdup(current->next->content);
-		if (!filename)
-			exit(1); // free fonksiyonu
 		check_redirect_file(cmd, filename, current->rank);
 		current = current->next->next;
 		free(filename);
+		if (cmd->error != NULL)
+			return;
 	}
 }
 
-void	redirect_handle(t_executor *node)
+void redirect_handle(t_executor *node)
 {
-	int	fd;
+	int fd;
 
 	if (node->infile)
 	{
@@ -146,9 +145,9 @@ void	redirect_handle(t_executor *node)
 		if (fd < 0)
 		{
 			perror("minishell: open infile");
-			return ;
+			exit(1);
 		}
-		dup2(fd, STDIN_FILENO); 
+		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
 	if (node->outfile)
@@ -157,7 +156,7 @@ void	redirect_handle(t_executor *node)
 		if (fd < 0)
 		{
 			perror("minishell: open outfile");
-			return ;
+			exit(1);
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
@@ -168,15 +167,9 @@ void	redirect_handle(t_executor *node)
 		if (fd < 0)
 		{
 			perror("minishell: open append outfile");
-			return ;
+			exit(1);
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
-	}
-	if (node->heredoc_delimiters) // Heredoc işlemi varsa
-	{
-		// Heredoc işlemine göre özel bir yönlendirme yapabilirsin.
-		// Burada sadece placeholder olarak bırakıyorum:
-		// heredoc_handle(node->heredoc);
 	}
 }

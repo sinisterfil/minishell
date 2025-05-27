@@ -3,14 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 13:11:21 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/24 15:58:07 by ihancer          ###   ########.fr       */
+/*   Updated: 2025/05/27 19:09:52 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void handle_heredoc(t_executor *cmd)
+{
+	int pipefd[2];
+	char *line;
+	char *delimiter;
+
+	if (!cmd->heredoc_delimiters || !cmd->heredoc_delimiters[0])
+		return;
+	delimiter = cmd->heredoc_delimiters[0];
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		exit(1);
+	}
+	while (1)
+	{
+		line = readline("heredoc> ");
+		if (!line || strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break;
+		}
+		write(pipefd[1], line, strlen(line));
+		write(pipefd[1], "\n", 1);
+		free(line);
+	}
+	close(pipefd[1]);
+	cmd->heredoc_file = pipefd[0]; // child process buradan okuyacak
+}
+
 
 void pipe_count(t_exec *node)
 {
@@ -30,7 +61,6 @@ void pipe_count(t_exec *node)
 
 t_exec *set_argv(t_executor **node, t_exec *start, int i)
 {
-    //printf("set_argv çağrıldı, i=%d, start rank=%d, content='%s'\n", i, start->rank, start->content ? start->content : "NULL");
     t_exec *current = start;
     int j;
     int h_count;
@@ -55,6 +85,7 @@ t_exec *set_argv(t_executor **node, t_exec *start, int i)
 		{
 			set_heredoc(current, node[i], h_count);
 			h_count++;
+            node[i]->heredoc_delimiters[h_count] = NULL;
 			current = current->next->next;
 			continue ;
 		}
@@ -67,22 +98,16 @@ t_exec *set_argv(t_executor **node, t_exec *start, int i)
         current = current->next;
     }
     node[i]->argv[j] = NULL;
-    if (j == 0)
-        printf("WARNING: argv boş kaldi. i = %d\n", i);
-    else
-    {
-        printf("Node[%d] argv: ", i);
-        for (int x = 0; x < j; x++)
-            printf("%s ", node[i]->argv[x]);
-        printf("\n");
-    }
     return current;
 }
 
 char *join_path(const char *dir, const char *cmd)
 {
-    int len = strlen(dir) + strlen(cmd) + 2; // '/' + '\0'
-    char *full_path = malloc(len);
+    int len;
+    char *full_path;
+
+    len = strlen(dir) + strlen(cmd) + 2; // '/' + '\0'
+    full_path = malloc(len);
     if (!full_path)
         return NULL;
     strcpy(full_path, dir);
@@ -99,13 +124,13 @@ char *find_command_path(char *command)
     char *dir;
     char *full_path;
 
+    if (!command)
+    return NULL;
     if (!path_env)
         return NULL;
-
     path_copy = strdup(path_env);
     if (!path_copy)
         return NULL;
-
     dir = strtok(path_copy, ":");
     while (dir)
     {
@@ -127,6 +152,7 @@ char *find_command_path(char *command)
     return NULL;
 }
 
+
 void run_execve(t_executor *node, int input_fd, int output_fd)
 {
     char *cmd_path;
@@ -141,89 +167,107 @@ void run_execve(t_executor *node, int input_fd, int output_fd)
         dup2(output_fd, STDOUT_FILENO);
         close(output_fd);
     }
-
-    // Komutun tam yolunu bul
     cmd_path = find_command_path(node->argv[0]);
     if (!cmd_path)
     {
-        perror("Komut bulunamadi");
+        printf("%s: command not found\n", node->argv[0]);
+        free_token(node->program);
+        free_env(node->program);
+        free_exec(node->program);
+        free_executer(node->program);
         exit(127);
     }
     execve(cmd_path, node->argv, node->program->env_str);
     perror("execve failed");
-    free(cmd_path); // sadece execve başarısız olursa buraya gelir
+    free(cmd_path);
+    free_executer(node->program);
     exit(1);
 }
+
 
 void main_execute(t_executor *exec)
 {
     int pipefds[2];
     pid_t pid;
     int prev_fd;
+    int output_fd;
     t_executor *current;
 
     current = exec;
     prev_fd = STDIN_FILENO;
     while (current)
     {
-        redirect_handle(current);
-        int output_fd = STDOUT_FILENO;
+        output_fd = STDOUT_FILENO;
+        if (current->heredoc_delimiters && current->heredoc_delimiters[0])
+        {
+            handle_heredoc(current);  // pipe oluşturup yazıyor
+        }
         if (current->next)
         {
             if (pipe(pipefds) == -1)
             {
                 perror("pipe failed");
+                free_executer(current->program);
                 exit(1);
             }
-            output_fd = pipefds[1]; // stdout bu pipe'a yazılacak
+            output_fd = pipefds[1];
         }
-        printf("Child process: executing command: ");
-        for (int k = 0; current->argv[k]; k++)
-            printf("%s ", current->argv[k]);
-        printf("\n");
         pid = fork();
         if (pid == -1)
         {
             perror("fork failed");
+            free_executer(current->program);
             exit(1);
         }
-        if (pid == 0) // Child process
+        if (pid == 0)
         {
-            redirect_handle(current);
             if (current->next)
-                close(pipefds[0]); // Bu child, pipe'ın sadece yazma ucunu kullanır
-            run_execve(current, prev_fd, output_fd);
+                close(pipefds[0]);
+            if (current->heredoc_file != -1)
+            {
+                dup2(current->heredoc_file, STDIN_FILENO);
+                close(current->heredoc_file);
+            }
+            else if (prev_fd != STDIN_FILENO)
+            {
+                dup2(prev_fd, STDIN_FILENO);
+                close(prev_fd);
+            }
+            if (output_fd != STDOUT_FILENO)
+            {
+                dup2(output_fd, STDOUT_FILENO);
+                close(output_fd);
+            }
+            redirect_handle(current);
+            if (current->error || !current->argv[0])
+            {
+                if (current->error)
+                    fprintf(stderr, "minishell: %s\n", current->error);
+                free_env(current->program);
+                free_token(current->program);
+                free_exec(current->program);
+                free_executer(current->program);
+                exit(1);
+            }
+            run_execve(current, STDIN_FILENO, STDOUT_FILENO);
         }
-        else // Parent process
+        else
         {
             if (prev_fd != STDIN_FILENO)
-                close(prev_fd); // Önceki pipe'dan gelen okuma ucunu kapat
+                close(prev_fd);
+            if (current->heredoc_file != -1)
+                close(current->heredoc_file); // child zaten kullandı
             if (current->next)
-                close(pipefds[1]); // Bu parent, pipe'ın yazma ucunu kapatır
+                close(pipefds[1]);
             if (current->next)
-                prev_fd = pipefds[0]; // Pipe'ın okuma ucunu kaydet
+                prev_fd = pipefds[0];
             else
-                prev_fd = STDIN_FILENO; // Artık gerek yok, stdin gibi davran
+                prev_fd = STDIN_FILENO;
             current = current->next;
         }
     }
     while (wait(NULL) > 0)
-        ;
-}
-
-void print_exec_list(t_exec *head)
-{
-    t_exec *current = head;
-    int i = 0;
-
-    printf("---- t_exec list start ----\n");
-    while (current)
-    {
-        printf("Node[%d] rank=%d, content='%s'\n", i, current->rank, current->content ? current->content : "NULL");
-        current = current->next;
-        i++;
-    }
-    printf("---- t_exec list end ----\n");
+    ;
 }
 
 void	prep_exec(t_main *program)
@@ -248,14 +292,17 @@ void	prep_exec(t_main *program)
 		{
 			while (--count >= 0)
 				free(node[count]);
-			free(node);
+			free_executer(program);
+            return ;
 		}
 		node[count]->infile = NULL;
 		node[count]->outfile = NULL;
-		node[count]->heredoc_file = NULL;
+		node[count]->heredoc_file = -1;
 		node[count]->append = NULL;
 		node[count]->pipe = program->exec->pipe;
+        node[count]->heredoc_delimiters = NULL;
         node[count]->program = program;
+        node[count]->error = NULL;
         current = set_argv(node, current, count);
 		if (count > 0)
 		    node[count - 1]->next = node[count];
@@ -264,6 +311,6 @@ void	prep_exec(t_main *program)
 	}
     node[count] = NULL;
     program->executer = node;
-	//print_exec_list(program->exec->next);
+    program->control = 1;
     main_execute(node[0]);
 }
