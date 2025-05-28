@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 13:11:21 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/27 19:09:52 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/28 18:47:29 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void handle_heredoc(t_executor *cmd)
 	close(pipefd[1]);
 	cmd->heredoc_file = pipefd[0]; // child process buradan okuyacak
 }
-
 
 void pipe_count(t_exec *node)
 {
@@ -78,9 +77,7 @@ t_exec *set_argv(t_executor **node, t_exec *start, int i)
             break;
         }
         if (current->rank == 4 && current->content)
-        {
             node[i]->argv[j++] = ft_strdup(current->content);
-        }
         if (current && current->rank == 3)
 		{
 			set_heredoc(current, node[i], h_count);
@@ -119,16 +116,19 @@ char *join_path(const char *dir, const char *cmd)
 
 char *find_command_path(char *command)
 {
-    char *path_env = getenv("PATH");
+    char *path_env;
     char *path_copy;
     char *dir;
     char *full_path;
 
+    if (access(command, X_OK) == 0) // çalıştırılabilir mi?
+        return command;
+    path_env = getenv("PATH");
     if (!command)
-    return NULL;
+        return NULL;
     if (!path_env)
         return NULL;
-    path_copy = strdup(path_env);
+    path_copy = ft_strdup(path_env);
     if (!path_copy)
         return NULL;
     dir = strtok(path_copy, ":");
@@ -183,7 +183,6 @@ void run_execve(t_executor *node, int input_fd, int output_fd)
     free_executer(node->program);
     exit(1);
 }
-
 
 void main_execute(t_executor *exec)
 {
@@ -243,8 +242,8 @@ void main_execute(t_executor *exec)
             {
                 if (current->error)
                     fprintf(stderr, "minishell: %s\n", current->error);
-                free_env(current->program);
                 free_token(current->program);
+                free_env(current->program);
                 free_exec(current->program);
                 free_executer(current->program);
                 exit(1);
