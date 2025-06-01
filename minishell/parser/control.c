@@ -6,11 +6,11 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:39 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/27 17:11:47 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/31 14:16:35 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int set_rank(t_token *token)
 {
@@ -51,7 +51,9 @@ int pipe_control(t_token *token)
 		if (node->next && node->next->rank != 4)
 		{
 			if ((node->rank != 4 && node->rank != 1) || (node->next->next != NULL && node->next->next->rank != 4 && node->next->rank != 1))
-				return (printf("error, unexpecteed token\n"), 1);
+				return (printf("error, unexpected token\n"), 1);
+			if (node->rank == 1 && node->next && node->next->rank == 1)
+				return (printf("error, near |\n"), 1);
 		}
 		node = node->next;
 	}
@@ -79,4 +81,30 @@ int quote_control(char *line)
 	if (flag != 0)
 		return (printf("Error! Waiting for expression.\n"));
 	return (0);
+}
+
+char	*if_loop(char *line, int i)
+{
+	char	*first;
+	char	*new;
+
+	first = ft_substr(line, 0, i - 2);
+	new = ft_substr(line, i, ft_strlen(&line[i]));
+	line = my_join(line, first, new);
+	return (line);
+}
+
+void find_keys(t_token **token)
+{
+	t_token *temp;
+
+	temp = (*token)->next;
+	while (temp)
+	{
+		if (temp->flag == -99)
+		{
+			all_keys(temp);
+		}
+		temp = temp->next;
+	}
 }

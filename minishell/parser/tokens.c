@@ -1,35 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bilmiyorum.c                                       :+:      :+:    :+:   */
+/*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 12:24:37 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/27 14:10:44 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/31 15:04:08 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	separate_two(t_token *token, char *content, int len, int location)
+static void seperate_two_helper(t_token *token, t_token *temp, char *content, int len)
 {
-	t_token	*temp;
-	t_token	*new;
-	char	*str;
-	char	*tmp;
+	t_token *new;
+
+	new = ft_lstnew(ft_substr(token->content, len, ft_strlen(token->content) - len));
+	token->next = new;
+	new->next = temp;
+	free(token->content);
+	token->content = ft_strdup(content);
+	new->space = token->space;
+	token->space = 0;
+}
+
+void separate_two(t_token *token, char *content, int len, int location)
+{
+	t_token *temp;
+	t_token *new;
+	char *str;
+	char *tmp;
 
 	temp = token->next;
 	if (location == 0)
-	{
-		new = ft_lstnew(ft_substr(token->content, len, ft_strlen(token->content) - len));
-		token->next = new;
-		new->next = temp;
-		free(token->content);
-		token->content = ft_strdup(content);
-		new->space = token->space;
-		token->space = 0;
-	}
+		seperate_two_helper(token, temp, content, len);
 	else
 	{
 		new = ft_lstnew(ft_strdup(content));
@@ -45,13 +50,13 @@ void	separate_two(t_token *token, char *content, int len, int location)
 	}
 }
 
-void	separate_three(t_token *token, char *content, int len, int location)
+void separate_three(t_token *token, char *content, int len, int location)
 {
-	t_token	*temp;
-	t_token	*last;
-	t_token	*new;
-	char	*str;
-	int		str_len;
+	t_token *temp;
+	t_token *last;
+	t_token *new;
+	char *str;
+	int str_len;
 
 	str = ft_strdup(token->content);
 	str_len = ft_strlen(str);
@@ -69,9 +74,9 @@ void	separate_three(t_token *token, char *content, int len, int location)
 	token->space = 0;
 }
 
-void	arrange_tokens(t_token *token, char *content, int len)
+void arrange_tokens(t_token *token, char *content, int len)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	i = ft_strstr(token->content, content);
@@ -89,7 +94,7 @@ void	arrange_tokens(t_token *token, char *content, int len)
 	}
 }
 
-void	new_func(t_token *temp)
+void all_keys(t_token *temp)
 {
 	if (temp->content != NULL && ft_strstr(temp->content, "<<") != -1)
 		arrange_tokens(temp, "<<", 2);
@@ -109,21 +114,6 @@ void	new_func(t_token *temp)
 		else
 			arrange_tokens(temp, "<", 1);
 	}
-	if (temp->content != NULL && ft_strchr(temp->content, '|'))  
+	if (temp->content != NULL && ft_strchr(temp->content, '|'))
 		arrange_tokens(temp, "|", 1);
-}
-
-void	find_keys(t_token **token)
-{
-	t_token	*temp;
-
-	temp = (*token)->next;
-	while (temp)
-	{
-		if (temp->flag == -99)
-		{
-			new_func(temp);
-		}
-		temp = temp->next;
-	}
 }

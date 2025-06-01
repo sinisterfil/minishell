@@ -6,13 +6,13 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:16:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/25 19:44:09 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/31 14:05:47 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	token_init(t_main *program)
+void token_init(t_main *program)
 {
 	program->token = malloc(sizeof(t_token));
 	if (!program->token)
@@ -29,7 +29,7 @@ void	token_init(t_main *program)
 	program->token->next = NULL;
 }
 
-void	env_init(t_main *program, char **env)
+void env_init(t_main *program, char **env)
 {
 	t_env envp;
 
@@ -51,11 +51,10 @@ void exec_init(t_main *program)
 	program->exec->rank = 4;
 }
 
-void	ft_init(t_main *program, char **env)
+void ft_init(t_main *program, char **env)
 {
 	program->control = 0;
 	token_init(program);
 	env_init(program, env);
 	exec_init(program);
 }
-

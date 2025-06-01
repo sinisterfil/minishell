@@ -6,22 +6,11 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:14:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/27 13:17:39 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/31 14:14:35 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-static char	*if_loop(char *line, int i)
-{
-	char	*first;
-	char	*new;
-
-	first = ft_substr(line, 0, i - 2);
-	new = ft_substr(line, i, ft_strlen(&line[i]));
-	line = my_join(line, first, new);
-	return (line);
-}
+#include "../minishell.h"
 
 char	*empty_quotes(char *line)
 {

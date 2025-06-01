@@ -36,7 +36,7 @@ char	*find_dollar(char *content, int index)
 	if (isdigit(content[i]))
 		i++;
 	else
-		while (ft_isalnum(content[i]) == 1)
+		while (ft_isalnum(content[i]) == 1 || content[i] == '_')
 			i++;
 	dollar = ft_substr(content, index + 1, i - index - 1);
 	allahim = ft_strdup(dollar);
@@ -66,7 +66,6 @@ void	dollar_control(t_token *token)
 		index = ft_our_strchr(token->content, 36);
 		while (index >= 0 && token->flag != 39)
 		{
-			// question_mark(token->content, index);
 			new = index;
 			before_dollar = ft_substr(token->content, 0, index);
 			after_dollar = find_dollar(token->content, index);

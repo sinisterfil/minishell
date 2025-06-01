@@ -3,11 +3,11 @@ NAME = minishell
 SRCS = 	minishell.c\
 		utils.c\
 		signals.c\
-		quotes.c\
-		init.c\
+		parser/quotes.c\
+		parser/init.c\
 		dollar.c\
-		control.c\
-		bilmiyorum.c\
+		parser/control.c\
+		parser/tokens.c\
 		env.c\
 		setting.c\
 		free.c\

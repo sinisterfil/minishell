@@ -6,7 +6,7 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 13:11:21 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/28 18:47:29 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/31 13:49:07 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ t_exec *set_argv(t_executor **node, t_exec *start, int i)
         return NULL;
     while (current)
     {
-        if (current->rank == 1) // pipe
+        if (current->rank == 1)
         {
             current = current->next;
             break;
@@ -180,6 +180,9 @@ void run_execve(t_executor *node, int input_fd, int output_fd)
     execve(cmd_path, node->argv, node->program->env_str);
     perror("execve failed");
     free(cmd_path);
+    free_token(node->program);
+    free_env(node->program);
+    free_exec(node->program);
     free_executer(node->program);
     exit(1);
 }
@@ -266,7 +269,17 @@ void main_execute(t_executor *exec)
         }
     }
     while (wait(NULL) > 0)
-    ;
+        ;
+    // int status;
+    // pid_t wpid;
+    // while ((wpid = wait(&status)) > 0)
+    // {
+    //     if (WIFEXITED(status))
+    //         exec->program->exit_status = WEXITSTATUS(status);
+    //     else if (WIFSIGNALED(status))
+    //         exec->program->exit_status = 128 + WTERMSIG(status);
+    // }
+
 }
 
 void	prep_exec(t_main *program)

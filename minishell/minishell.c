@@ -6,34 +6,13 @@
 /*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:44:30 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/27 17:13:26 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/05/31 15:03:24 by hbayram          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_token(t_token *list)
-{
-	while (list)
-	{
-		printf("%s\n", list->content);
-		printf("%d\n", list->space);
-		printf("%d\n", list->flag);
-		printf("RANK %d\n\n", list->rank);
-		list = list->next;
-	}
-}
-void	print_exec(t_exec *exec)
-{
-	while (exec)
-	{
-		if (exec->content)
-			printf("%s\n", exec->content);
-		if(exec->rank)
-			printf("RANK %d\n", exec->rank);
-		exec = exec->next;
-	}
-}
+
 
 int	parsing(char *line, t_main *program)
 {

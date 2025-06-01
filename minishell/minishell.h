@@ -131,9 +131,8 @@ char *dollar_handle(char *dollar);
 int pipe_control(t_token *token);
 int set_rank(t_token *token);
 int quote_control(char *line);
-
+char	*if_loop(char *line, int i);
 void find_keys(t_token **token);
-void print_token(t_token *list);
 
 // env
 void set_env(t_main *program, t_env *env);
@@ -167,6 +166,7 @@ void	check_redirect_file(t_executor *cmd, char *filename, int rank);
 void	set_redirect(t_exec *current, t_executor *cmd);
 void	redirect_handle(t_executor *node);
 
+void all_keys(t_token *temp);
 
 void free_token(t_main *program);
 
