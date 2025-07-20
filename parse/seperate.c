@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokens.c                                           :+:      :+:    :+:   */
+/*   seperate.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 12:24:37 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/31 15:04:08 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/07/04 15:15:40 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void seperate_two_helper(t_token *token, t_token *temp, char *content, int len)
+static void	seperate_two_helper(t_token *token, t_token *temp, char *content,
+		int len)
 {
-	t_token *new;
+	t_token	*new;
 
-	new = ft_lstnew(ft_substr(token->content, len, ft_strlen(token->content) - len));
+	new = ft_lstnew(ft_substr(token->content, len, ft_strlen(token->content)
+				- len));
 	token->next = new;
 	new->next = temp;
 	free(token->content);
@@ -25,12 +27,12 @@ static void seperate_two_helper(t_token *token, t_token *temp, char *content, in
 	token->space = 0;
 }
 
-void separate_two(t_token *token, char *content, int len, int location)
+void	separate_two(t_token *token, char *content, int len, int location)
 {
-	t_token *temp;
-	t_token *new;
-	char *str;
-	char *tmp;
+	t_token	*temp;
+	t_token	*new;
+	char	*str;
+	char	*tmp;
 
 	temp = token->next;
 	if (location == 0)
@@ -50,13 +52,13 @@ void separate_two(t_token *token, char *content, int len, int location)
 	}
 }
 
-void separate_three(t_token *token, char *content, int len, int location)
+void	separate_three(t_token *token, char *content, int len, int location)
 {
-	t_token *temp;
-	t_token *last;
-	t_token *new;
-	char *str;
-	int str_len;
+	t_token	*temp;
+	t_token	*last;
+	t_token	*new;
+	char	*str;
+	int		str_len;
 
 	str = ft_strdup(token->content);
 	str_len = ft_strlen(str);
@@ -74,9 +76,9 @@ void separate_three(t_token *token, char *content, int len, int location)
 	token->space = 0;
 }
 
-void arrange_tokens(t_token *token, char *content, int len)
+void	arrange_tokens(t_token *token, char *content, int len)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	i = ft_strstr(token->content, content);
@@ -94,7 +96,7 @@ void arrange_tokens(t_token *token, char *content, int len)
 	}
 }
 
-void all_keys(t_token *temp)
+void	set_keys(t_token *temp)
 {
 	if (temp->content != NULL && ft_strstr(temp->content, "<<") != -1)
 		arrange_tokens(temp, "<<", 2);

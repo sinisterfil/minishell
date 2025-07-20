@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbayram <hbayram@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ihancer <ihancer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:14:34 by hbayram           #+#    #+#             */
-/*   Updated: 2025/05/31 14:14:35 by hbayram          ###   ########.fr       */
+/*   Updated: 2025/07/01 04:35:55 by ihancer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,6 @@ char	*empty_quotes(char *line)
 		}
 	}
 	return (line);
-}
-
-static char	*find_helper(char *line, int *ptr_i, int *ptr_j)
-{
-	int		i;
-	int		j;
-	char *content;
-
-	i = *ptr_i;
-	j = *ptr_j;
-	content = ft_substr(line, i, j - i);
-	if (j - i > 0)
-	{
-		i = j;
-		if (line[i] && line[i] != '\0')
-			i++;
-	}
-	*ptr_i = i;
-	*ptr_j = j;
-	return (content);
 }
 
 int	find_quotes(char *line, int *ptr_i, int *ptr_j)
@@ -95,8 +75,8 @@ static void	token_flags(char *line, t_token *new_token, int quote)
 	new_token->flag = quote;
 	if (*line == 32 || (*line >= 9 && *line <= 13))
 		new_token->space = 1;
-	else if (*(line) && *(line + 1) && (*(line + 1) == 32 || (*(line + 1) >= 9 && *(line + 1) <= 13))
-		&& (quote == 34 || quote == 39))
+	else if (*(line) && *(line + 1) && (*(line + 1) == 32 || (*(line + 1) >= 9
+				&& *(line + 1) <= 13)) && (quote == 34 || quote == 39))
 		new_token->space = 1;
 }
 
